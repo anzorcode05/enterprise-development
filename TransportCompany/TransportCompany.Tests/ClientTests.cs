@@ -13,10 +13,16 @@ public class ClientTests
     /// </summary>
     public static TheoryData<int, int[]> ClientsByVehicleModelData => new()
     {
-        { 1, [1, 3, 5, 7] },
-        { 2, [1, 3, 4, 8] },
-        { 3, [3, 6, 9] },
-        { 4, [2, 7] }
+        { 1, [1, 3, 9] },
+        { 2, [5, 2] },
+        { 3, [5, 2] },
+        { 4, [1, 4] },
+        { 5, [1, 7] },
+        { 6, [7, 4] },
+        { 7, [1, 9] },
+        { 8, [6] },
+        { 9, [10, 8] },
+        { 10, [3] }
     };
 
     /// <summary>
@@ -39,12 +45,14 @@ public class ClientTests
     }
 
     /// <summary>
-    /// Проверяет получение пяти клиентов с наибольшей суммой затрат на перевозки
+    /// Проверяет получение пяти клиентов с наибольшей суммой затрат на перевозки.
+    /// Суммы посчитаны вручную: клиент 1 - 300000, клиенты 4 и 6 - по 225000
+    /// (при равенстве первым идёт клиент с меньшим ФИО), клиент 9 - 168000, клиент 5 - 155000
     /// </summary>
     [Fact]
     public void GetTopFiveClientsByTotalCost()
     {
-        var expected = new List<int> { 1, 9, 5, 7, 3 };
+        var expected = new List<int> { 1, 6, 4, 9, 5 };
 
         var result = TransportData.Trips
             .GroupBy(trip => trip.Client)

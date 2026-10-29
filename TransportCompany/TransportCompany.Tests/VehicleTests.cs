@@ -35,8 +35,8 @@ public class VehicleTests
     [InlineData(5, 2)]
     [InlineData(6, 2)]
     [InlineData(7, 2)]
-    [InlineData(8, 1)]
-    [InlineData(9, 1)]
+    [InlineData(8, 2)]
+    [InlineData(9, 2)]
     [InlineData(10, 1)]
     public void GetTripCountForEachVehicle(int vehicleId, int expected)
     {

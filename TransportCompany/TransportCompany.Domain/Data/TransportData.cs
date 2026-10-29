@@ -52,7 +52,7 @@ public static class TransportData
         new Driver { Id = 3,  PassportNumber = "4503 333333", FullName = "Sidorov Alexey Sergeevich", Experience = 20, LicenseCategory = "CE" },
         new Driver { Id = 4,  PassportNumber = "4504 444444", FullName = "Kuznetsov Dmitry Andreevich", Experience = 5,  LicenseCategory = "C"  },
         new Driver { Id = 5,  PassportNumber = "4505 555555", FullName = "Smirnov Nikolay Pavlovich", Experience = 12, LicenseCategory = "CE" },
-        new Driver { Id = 6,  PassportNumber = "4506 666666", FullName = "Popov Sergey Vladimirovich", Experience = 3,  LicenseCategory = "B"  },
+        new Driver { Id = 6,  PassportNumber = "4506 666666", FullName = "Popov Sergey Vladimirovich", Experience = 3,  LicenseCategory = "C"  },
         new Driver { Id = 7,  PassportNumber = "4507 777777", FullName = "Fedorov Andrey Olegovich", Experience = 18, LicenseCategory = "CE" },
         new Driver { Id = 8,  PassportNumber = "4508 888888", FullName = "Morozov Pavel Igorevich", Experience = 7,  LicenseCategory = "C"  },
         new Driver { Id = 9,  PassportNumber = "4509 999999", FullName = "Volkov Oleg Viktorovich", Experience = 25, LicenseCategory = "CE" },
@@ -81,10 +81,10 @@ public static class TransportData
     /// </summary>
     public static IReadOnlyList<Trip> Trips { get; } =
     [
-         
-        new Trip { Id = 1,  Driver = Drivers[0], Vehicle = Vehicles[0], Client = Clients[0], Origin = "Moscow", Destination = "SPb",DepartureDate = new DateOnly(2026, 1, 10), CargoWeight = 15, Cost = 80000  },
+
+        new Trip { Id = 1,  Driver = Drivers[0], Vehicle = Vehicles[0], Client = Clients[0], Origin = "Moscow", Destination = "SPb", DepartureDate = new DateOnly(2026, 1, 10), CargoWeight = 15, Cost = 80000  },
         new Trip { Id = 2,  Driver = Drivers[0], Vehicle = Vehicles[0], Client = Clients[2], Origin = "Moscow", Destination = "Kazan", DepartureDate = new DateOnly(2026, 2, 5),  CargoWeight = 12, Cost = 60000  },
-        new Trip { Id = 3,  Driver = Drivers[0], Vehicle = Vehicles[1], Client = Clients[4], Origin = "SPb", Destination = "Novgorod",DepartureDate = new DateOnly(2026, 3, 12), CargoWeight = 18, Cost = 90000  },
+        new Trip { Id = 3,  Driver = Drivers[0], Vehicle = Vehicles[1], Client = Clients[4], Origin = "SPb", Destination = "Novgorod", DepartureDate = new DateOnly(2026, 3, 12), CargoWeight = 18, Cost = 90000  },
 
         new Trip { Id = 4,  Driver = Drivers[1], Vehicle = Vehicles[2], Client = Clients[1], Origin = "Kazan", Destination = "Moscow", DepartureDate = new DateOnly(2026, 1, 20), CargoWeight = 10, Cost = 50000  },
         new Trip { Id = 5,  Driver = Drivers[1], Vehicle = Vehicles[3], Client = Clients[3], Origin = "Moscow", Destination = "Sochi",  DepartureDate = new DateOnly(2026, 4, 1),  CargoWeight = 25, Cost = 120000 },
@@ -108,7 +108,7 @@ public static class TransportData
         new Trip { Id = 17, Driver = Drivers[7], Vehicle = Vehicles[4], Client = Clients[6], Origin = "Voronezh",Destination = "Moscow",  DepartureDate = new DateOnly(2026, 1, 30), CargoWeight = 7,  Cost = 40000  },
 
         new Trip { Id = 18, Driver = Drivers[8], Vehicle = Vehicles[5], Client = Clients[3], Origin = "Moscow",  Destination = "Murmansk",DepartureDate = new DateOnly(2026, 2, 25), CargoWeight = 21, Cost = 105000 },
-        new Trip { Id = 19, Driver = Drivers[8], Vehicle = Vehicles[6], Client = Clients[8], Origin = "Murmansk",Destination = "Moscow",  DepartureDate = new DateOnly(2026, 4, 15), CargoWeight = 19, Cost = 98000  },
+        new Trip { Id = 19, Driver = Drivers[8], Vehicle = Vehicles[6], Client = Clients[8], Origin = "Murmansk",Destination = "Moscow",  DepartureDate = new DateOnly(2026, 4, 15), CargoWeight = 17, Cost = 98000  },
 
         new Trip { Id = 20, Driver = Drivers[9], Vehicle = Vehicles[7], Client = Clients[5], Origin = "Moscow", Destination = "Yaroslavl",DepartureDate = new DateOnly(2026, 3, 22), CargoWeight = 24, Cost = 115000 }
     ];
