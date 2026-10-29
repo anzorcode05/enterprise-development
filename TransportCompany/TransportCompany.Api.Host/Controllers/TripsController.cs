@@ -36,6 +36,7 @@ public sealed class TripsController(ITripService service) : ApiControllerBase
     public ActionResult<TripDto> Update(int id, TripUpdateDto request) =>
         service.Update(id, request) is { } value ? Ok(value) : NotFound();
 
+    /// <summary>Удаляет рейс</summary>
     [HttpDelete("{id:int}")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
