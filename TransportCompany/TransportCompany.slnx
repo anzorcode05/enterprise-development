@@ -1,4 +1,9 @@
 <Solution>
+  <Project Path="TransportCompany.Domain.Shared/TransportCompany.Domain.Shared.csproj" />
   <Project Path="TransportCompany.Domain/TransportCompany.Domain.csproj" />
+  <Project Path="TransportCompany.Application.Contracts/TransportCompany.Application.Contracts.csproj" />
+  <Project Path="TransportCompany.Application/TransportCompany.Application.csproj" />
+  <Project Path="TransportCompany.Infrastructure.InMemory/TransportCompany.Infrastructure.InMemory.csproj" />
+  <Project Path="TransportCompany.Api.Host/TransportCompany.Api.Host.csproj" />
   <Project Path="TransportCompany.Tests/TransportCompany.Tests.csproj" />
 </Solution>
