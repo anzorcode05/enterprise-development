@@ -1,11 +1,19 @@
+
+using TransportCompany.Domain.Shared;
+
 namespace TransportCompany.Application.Contracts.Drivers;
 
 /// <summary>
-/// Данные водителя, возвращаемые API.
+/// Данные водителя, возвращаемые API
 /// </summary>
-/// <param name="Id">идентификатор водителя</param>
-/// <param name="PassportNumber">номер паспорта</param>
+/// <param name="Id">Идентификатор водителя</param>
+/// <param name="LicenseNumber">Номер водительского удостоверения</param>
 /// <param name="FullName">ФИО водителя</param>
-/// <param name="Experience">стаж в годах</param>
-/// <param name="LicenseCategory">категория водительского удостоверения</param>
-public sealed record DriverDto(int Id, string PassportNumber, string FullName, int Experience, string LicenseCategory);
+/// <param name="Experience">Стаж в годах</param>
+/// <param name="LicenseCategory">Категория водительского удостоверения</param>
+public sealed record DriverDto(
+    int Id,
+    string LicenseNumber,
+    string FullName,
+    int Experience,
+    DrivingLicenseCategory LicenseCategory);

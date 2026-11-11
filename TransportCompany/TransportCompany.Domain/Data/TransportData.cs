@@ -1,3 +1,4 @@
+
 using TransportCompany.Domain.Entities;
 using TransportCompany.Domain.Shared;
 
@@ -31,16 +32,16 @@ public static class TransportData
 
     public static IReadOnlyList<Driver> Drivers { get; } =
     [
-        new() { Id=1, PassportNumber="4501 111111", FullName="Ivanov Ivan Ivanovich", Experience=15, LicenseCategory="CE" },
-        new() { Id=2, PassportNumber="4502 222222", FullName="Petrov Petr Petrovich", Experience=8, LicenseCategory="C" },
-        new() { Id=3, PassportNumber="4503 333333", FullName="Sidorov Alexey Sergeevich", Experience=20, LicenseCategory="CE" },
-        new() { Id=4, PassportNumber="4504 444444", FullName="Kuznetsov Dmitry Andreevich", Experience=5, LicenseCategory="C" },
-        new() { Id=5, PassportNumber="4505 555555", FullName="Smirnov Nikolay Pavlovich", Experience=12, LicenseCategory="CE" },
-        new() { Id=6, PassportNumber="4506 666666", FullName="Popov Sergey Vladimirovich", Experience=3, LicenseCategory="C" },
-        new() { Id=7, PassportNumber="4507 777777", FullName="Fedorov Andrey Olegovich", Experience=18, LicenseCategory="CE" },
-        new() { Id=8, PassportNumber="4508 888888", FullName="Morozov Pavel Igorevich", Experience=7, LicenseCategory="C" },
-        new() { Id=9, PassportNumber="4509 999999", FullName="Volkov Oleg Viktorovich", Experience=25, LicenseCategory="CE" },
-        new() { Id=10, PassportNumber="4510 101010", FullName="Orlov Maxim Yurievich", Experience=10, LicenseCategory="C" }
+        new() { Id=1, LicenseNumber="4501111111", FullName="Ivanov Ivan Ivanovich", Experience=15, LicenseCategory=DrivingLicenseCategory.CE },
+        new() { Id=2, LicenseNumber="4502222222", FullName="Petrov Petr Petrovich", Experience=8, LicenseCategory=DrivingLicenseCategory.C },
+        new() { Id=3, LicenseNumber="4503333333", FullName="Sidorov Alexey Sergeevich", Experience=20, LicenseCategory=DrivingLicenseCategory.CE },
+        new() { Id=4, LicenseNumber="4504444444", FullName="Kuznetsov Dmitry Andreevich", Experience=5, LicenseCategory=DrivingLicenseCategory.C },
+        new() { Id=5, LicenseNumber="4505555555", FullName="Smirnov Nikolay Pavlovich", Experience=12, LicenseCategory=DrivingLicenseCategory.CE },
+        new() { Id=6, LicenseNumber="4506666666", FullName="Popov Sergey Vladimirovich", Experience=3, LicenseCategory=DrivingLicenseCategory.C },
+        new() { Id=7, LicenseNumber="4507777777", FullName="Fedorov Andrey Olegovich", Experience=18, LicenseCategory=DrivingLicenseCategory.CE },
+        new() { Id=8, LicenseNumber="4508888888", FullName="Morozov Pavel Igorevich", Experience=7, LicenseCategory=DrivingLicenseCategory.C },
+        new() { Id=9, LicenseNumber="4509999999", FullName="Volkov Oleg Viktorovich", Experience=25, LicenseCategory=DrivingLicenseCategory.CE },
+        new() { Id=10, LicenseNumber="4510101010", FullName="Orlov Maxim Yurievich", Experience=10, LicenseCategory=DrivingLicenseCategory.C }
     ];
 
     public static IReadOnlyList<Client> Clients { get; } =
