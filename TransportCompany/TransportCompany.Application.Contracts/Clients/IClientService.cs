@@ -1,7 +1,16 @@
+
 using TransportCompany.Application.Contracts.Common;
+
 namespace TransportCompany.Application.Contracts.Clients;
-public interface IClientService : ICrudService<int, ClientDto, ClientCreateDto, ClientUpdateDto>
+
+public interface IClientService
+    : ICrudService<int, ClientDto, ClientUpsertDto>
 {
-    IReadOnlyList<ClientDto> GetByVehicleModel(int vehicleModelId);
-    IReadOnlyList<ClientCostDto> GetTopByTotalCost(int count = 5);
+    Task<IReadOnlyList<ClientDto>> GetByVehicleModelAsync(
+        int vehicleModelId,
+        CancellationToken cancellationToken = default);
+
+    Task<IReadOnlyList<ClientCostDto>> GetTopByTotalCostAsync(
+        int count = 5,
+        CancellationToken cancellationToken = default);
 }

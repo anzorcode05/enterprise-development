@@ -1,7 +1,14 @@
+
 using TransportCompany.Application.Contracts.Common;
+
 namespace TransportCompany.Application.Contracts.Vehicles;
-public interface IVehicleService : ICrudService<int, VehicleDto, VehicleCreateDto, VehicleUpdateDto>
+
+public interface IVehicleService
+    : ICrudService<int, VehicleDto, VehicleUpsertDto>
 {
-    IReadOnlyList<VehicleDto> GetVehiclesOnTrips();
-    IReadOnlyList<VehicleTripCountDto> GetTripCounts();
+    Task<IReadOnlyList<VehicleDto>> GetVehiclesOnTripsAsync(
+        CancellationToken cancellationToken = default);
+
+    Task<IReadOnlyList<VehicleTripCountDto>> GetTripCountsAsync(
+        CancellationToken cancellationToken = default);
 }

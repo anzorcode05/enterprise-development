@@ -1,10 +1,24 @@
+
 namespace TransportCompany.Application.Contracts.Common;
 
-public interface ICrudService<TKey, TRead, in TCreate, in TUpdate>
+public interface ICrudService<TKey, TRead, in TUpsert>
 {
-    IReadOnlyList<TRead> GetAll();
-    TRead? GetById(TKey id);
-    TRead Create(TCreate request);
-    TRead? Update(TKey id, TUpdate request);
-    bool Delete(TKey id);
+    Task<IReadOnlyList<TRead>> GetAllAsync(CancellationToken cancellationToken = default);
+
+    Task<TRead?> GetByIdAsync(
+        TKey id,
+        CancellationToken cancellationToken = default);
+
+    Task<TRead> CreateAsync(
+        TUpsert request,
+        CancellationToken cancellationToken = default);
+
+    Task<TRead?> UpdateAsync(
+        TKey id,
+        TUpsert request,
+        CancellationToken cancellationToken = default);
+
+    Task<bool> DeleteAsync(
+        TKey id,
+        CancellationToken cancellationToken = default);
 }
