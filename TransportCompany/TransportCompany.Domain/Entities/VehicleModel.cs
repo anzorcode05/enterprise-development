@@ -1,10 +1,17 @@
+
 using TransportCompany.Domain.Shared;
 
 namespace TransportCompany.Domain.Entities;
 
-public class VehicleModel
+/// <summary>Модель кузова транспортного средства.</summary>
+public sealed class VehicleModel
 {
+    /// <summary>Уникальный идентификатор модели.</summary>
     public required int Id { get; set; }
+
+    /// <summary>Тип кузова.</summary>
     public BodyType BodyType { get; set; }
+
+    /// <summary>Объём кузова в кубических метрах.</summary>
     public double BodyVolume { get; set; }
 }
