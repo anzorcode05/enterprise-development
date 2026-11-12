@@ -1,18 +1,69 @@
+
 using TransportCompany.Application.Contracts.VehicleModels;
 using TransportCompany.Domain.Entities;
 using TransportCompany.Domain.Repositories;
-using TransportCompany.Domain.Shared;
+
 namespace TransportCompany.Application.Services;
-public sealed class VehicleModelService : CrudService<VehicleModel, VehicleModelDto, VehicleModelCreateDto, VehicleModelUpdateDto>, IVehicleModelService
+
+public sealed class VehicleModelService
+    : CrudService<VehicleModel, VehicleModelDto, VehicleModelUpsertDto>,
+      IVehicleModelService
 {
-    public VehicleModelService(IRepository<VehicleModel> repository) : base(repository) { }
-    protected override VehicleModelDto ToDto(VehicleModel m) => new(m.Id,m.BodyType.ToString(),m.BodyVolume);
-    protected override VehicleModel FromCreate(VehicleModelCreateDto r,int id) => new() { Id=id, BodyType=ParseBodyType(r.BodyType), BodyVolume=r.BodyVolume };
-    protected override VehicleModel FromUpdate(VehicleModel m,VehicleModelUpdateDto r)
+    private readonly IRepository<Vehicle> _vehicles;
+
+    public VehicleModelService(
+        IRepository<VehicleModel> models,
+        IRepository<Vehicle> vehicles)
+        : base(models)
     {
-        m.BodyType = ParseBodyType(r.BodyType);
-        m.BodyVolume = r.BodyVolume;
-        return m;
+        _vehicles = vehicles;
     }
-    private static BodyType ParseBodyType(string value) => Enum.TryParse<BodyType>(value,true,out var type) && Enum.IsDefined(type) ? type : throw new ArgumentException("Неизвестный тип кузова.");
+
+    protected override VehicleModelDto ToDto(VehicleModel model) =>
+        new(model.Id, model.BodyType, model.BodyVolume);
+
+    protected override Task<VehicleModel> CreateEntityAsync(
+        VehicleModelUpsertDto request,
+        int id)
+    {
+        return Task.FromResult(new VehicleModel
+        {
+            Id = id,
+            BodyType = request.BodyType,
+            BodyVolume = request.BodyVolume
+        });
+    }
+
+    protected override Task UpdateEntityAsync(
+        VehicleModel model,
+        VehicleModelUpsertDto request)
+    {
+        model.BodyType = request.BodyType;
+        model.BodyVolume = request.BodyVolume;
+
+        return Task.CompletedTask;
+    }
+
+    public override async Task<bool> DeleteAsync(
+        int id,
+        CancellationToken cancellationToken = default)
+    {
+        cancellationToken.ThrowIfCancellationRequested();
+
+        if (await Repository.GetByIdAsync(id) is null)
+        {
+            return false;
+        }
+
+        var vehicles = await _vehicles.FindAsync(
+            vehicle => vehicle.VehicleModel.Id == id);
+
+        if (vehicles.Count > 0)
+        {
+            throw new InvalidOperationException(
+                "Нельзя удалить модель, которая используется транспортом");
+        }
+
+        return await Repository.DeleteAsync(id);
+    }
 }
