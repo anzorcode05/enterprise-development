@@ -6,12 +6,21 @@ using TransportCompany.Domain.Repositories;
 
 namespace TransportCompany.Application.Services;
 
+/// <summary>
+/// Сервис для работы с транспортными средствами
+/// </summary>
 public sealed class VehicleService
     : CrudService<Vehicle, VehicleDto, VehicleUpsertDto>, IVehicleService
 {
     private readonly IRepository<VehicleModel> _models;
     private readonly IRepository<Trip> _trips;
 
+    /// <summary>
+    /// Создаёт сервис транспортных средств
+    /// </summary>
+    /// <param name="vehicles">Репозиторий транспортных средств</param>
+    /// <param name="models">Репозиторий моделей транспорта</param>
+    /// <param name="trips">Репозиторий рейсов</param>
     public VehicleService(
         IRepository<Vehicle> vehicles,
         IRepository<VehicleModel> models,
@@ -22,6 +31,7 @@ public sealed class VehicleService
         _trips = trips;
     }
 
+    /// <inheritdoc/>
     protected override VehicleDto ToDto(Vehicle vehicle)
     {
         var model = vehicle.VehicleModel;
@@ -37,6 +47,7 @@ public sealed class VehicleService
                 model.BodyVolume));
     }
 
+    /// <inheritdoc/>
     protected override async Task<Vehicle> CreateEntityAsync(
         VehicleUpsertDto request,
         int id)
@@ -54,6 +65,7 @@ public sealed class VehicleService
         };
     }
 
+    /// <inheritdoc/>
     protected override async Task UpdateEntityAsync(
         Vehicle vehicle,
         VehicleUpsertDto request)
@@ -67,6 +79,11 @@ public sealed class VehicleService
         vehicle.VehicleModel = model;
     }
 
+    /// <summary>
+    /// Возвращает транспортные средства, участвовавшие в рейсах
+    /// </summary>
+    /// <param name="cancellationToken">Токен отмены операции</param>
+    /// <returns>Список транспортных средств</returns>
     public async Task<IReadOnlyList<VehicleDto>> GetVehiclesOnTripsAsync(
         CancellationToken cancellationToken = default)
     {
@@ -83,6 +100,11 @@ public sealed class VehicleService
             .ToList();
     }
 
+    /// <summary>
+    /// Возвращает количество рейсов для каждого транспортного средства
+    /// </summary>
+    /// <param name="cancellationToken">Токен отмены операции</param>
+    /// <returns>Список транспортных средств с количеством рейсов</returns>
     public async Task<IReadOnlyList<VehicleTripCountDto>> GetTripCountsAsync(
         CancellationToken cancellationToken = default)
     {
@@ -104,6 +126,12 @@ public sealed class VehicleService
             .ToList();
     }
 
+    /// <summary>
+    /// Удаляет транспортное средство, если оно не используется в рейсах
+    /// </summary>
+    /// <param name="id">Идентификатор транспортного средства</param>
+    /// <param name="cancellationToken">Токен отмены операции</param>
+    /// <returns>true, если транспортное средство удалено</returns>
     public override async Task<bool> DeleteAsync(
         int id,
         CancellationToken cancellationToken = default)

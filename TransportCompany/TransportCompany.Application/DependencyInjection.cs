@@ -1,4 +1,3 @@
-
 using Microsoft.Extensions.DependencyInjection;
 using TransportCompany.Application.Contracts.Clients;
 using TransportCompany.Application.Contracts.Drivers;
@@ -9,17 +8,26 @@ using TransportCompany.Application.Services;
 
 namespace TransportCompany.Application;
 
+/// <summary>
+/// Предоставляет методы расширения для регистрации сервисов приложения
+/// </summary>
 public static class DependencyInjection
 {
-    public static IServiceCollection AddApplication(
-        this IServiceCollection services)
+    extension(IServiceCollection services)
     {
-        services.AddSingleton<IClientService, ClientService>();
-        services.AddSingleton<IDriverService, DriverService>();
-        services.AddSingleton<ITripService, TripService>();
-        services.AddSingleton<IVehicleModelService, VehicleModelService>();
-        services.AddSingleton<IVehicleService, VehicleService>();
+        /// <summary>
+        /// Регистрирует сервисы прикладного слоя
+        /// </summary>
+        /// <returns>Коллекция зарегистрированных сервисов</returns>
+        public IServiceCollection AddApplication()
+        {
+            services.AddSingleton<IClientService, ClientService>();
+            services.AddSingleton<IDriverService, DriverService>();
+            services.AddSingleton<ITripService, TripService>();
+            services.AddSingleton<IVehicleModelService, VehicleModelService>();
+            services.AddSingleton<IVehicleService, VehicleService>();
 
-        return services;
+            return services;
+        }
     }
 }

@@ -5,6 +5,9 @@ using TransportCompany.Domain.Repositories;
 
 namespace TransportCompany.Application.Services;
 
+/// <summary>
+/// Сервис для работы с рейсами
+/// </summary>
 public sealed class TripService
     : CrudService<Trip, TripDto, TripUpsertDto>, ITripService
 {
@@ -12,6 +15,13 @@ public sealed class TripService
     private readonly IRepository<Vehicle> _vehicles;
     private readonly IRepository<Client> _clients;
 
+    /// <summary>
+    /// Создаёт сервис рейсов
+    /// </summary>
+    /// <param name="trips">Репозиторий рейсов</param>
+    /// <param name="drivers">Репозиторий водителей</param>
+    /// <param name="vehicles">Репозиторий транспорта</param>
+    /// <param name="clients">Репозиторий клиентов</param>
     public TripService(
         IRepository<Trip> trips,
         IRepository<Driver> drivers,
@@ -24,6 +34,7 @@ public sealed class TripService
         _clients = clients;
     }
 
+    /// <inheritdoc/>
     protected override TripDto ToDto(Trip trip)
     {
         return new TripDto(
@@ -41,6 +52,7 @@ public sealed class TripService
             trip.Cost);
     }
 
+    /// <inheritdoc/>
     protected override async Task<Trip> CreateEntityAsync(
         TripUpsertDto request,
         int id)
@@ -68,6 +80,7 @@ public sealed class TripService
         };
     }
 
+    /// <inheritdoc/>
     protected override async Task UpdateEntityAsync(
         Trip trip,
         TripUpsertDto request)
@@ -91,7 +104,12 @@ public sealed class TripService
         trip.Cost = request.Cost;
     }
 
-
+    /// <summary>
+    /// Возвращает рейсы указанного клиента
+    /// </summary>
+    /// <param name="clientId">Идентификатор клиента</param>
+    /// <param name="cancellationToken">Токен отмены операции</param>
+    /// <returns>Список рейсов клиента</returns>
     public async Task<IReadOnlyList<TripDto>> GetByClientIdAsync(
         int clientId,
         CancellationToken cancellationToken = default)
@@ -104,7 +122,12 @@ public sealed class TripService
         return trips.Select(ToDto).ToList();
     }
 
-
+    /// <summary>
+    /// Возвращает рейсы указанного водителя
+    /// </summary>
+    /// <param name="driverId">Идентификатор водителя</param>
+    /// <param name="cancellationToken">Токен отмены операции</param>
+    /// <returns>Список рейсов водителя</returns>
     public async Task<IReadOnlyList<TripDto>> GetByDriverIdAsync(
         int driverId,
         CancellationToken cancellationToken = default)
@@ -115,10 +138,5 @@ public sealed class TripService
             trip => trip.Driver.Id == driverId);
 
         return trips.Select(ToDto).ToList();
-    }
-
-    private Task<IReadOnlyList<Trip>> _tripsByClient(int clientId)
-    {
-        return Repository.FindAsync(trip => trip.Client.Id == clientId);
     }
 }

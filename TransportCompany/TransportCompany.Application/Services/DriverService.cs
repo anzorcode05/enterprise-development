@@ -5,17 +5,26 @@ using TransportCompany.Domain.Repositories;
 
 namespace TransportCompany.Application.Services;
 
+/// <summary>
+/// Сервис для работы с водителями
+/// </summary>
 public sealed class DriverService
     : CrudService<Driver, DriverDto, DriverUpsertDto>, IDriverService
 {
     private readonly IRepository<Trip> _trips;
 
+    /// <summary>
+    /// Создаёт сервис водителей
+    /// </summary>
+    /// <param name="drivers">Репозиторий водителей</param>
+    /// <param name="trips">Репозиторий рейсов</param>
     public DriverService(IRepository<Driver> drivers, IRepository<Trip> trips)
         : base(drivers)
     {
         _trips = trips;
     }
 
+    /// <inheritdoc/>
     protected override DriverDto ToDto(Driver driver) =>
         new(
             driver.Id,
@@ -24,6 +33,7 @@ public sealed class DriverService
             driver.Experience,
             driver.LicenseCategory);
 
+    /// <inheritdoc/>
     protected override Task<Driver> CreateEntityAsync(DriverUpsertDto request, int id)
     {
         return Task.FromResult(new Driver
@@ -36,6 +46,7 @@ public sealed class DriverService
         });
     }
 
+    /// <inheritdoc/>
     protected override Task UpdateEntityAsync(Driver driver, DriverUpsertDto request)
     {
         driver.LicenseNumber = request.LicenseNumber.Trim();
@@ -46,6 +57,12 @@ public sealed class DriverService
         return Task.CompletedTask;
     }
 
+    /// <summary>
+    /// Возвращает водителей с наибольшим количеством рейсов
+    /// </summary>
+    /// <param name="count">Количество водителей в результате</param>
+    /// <param name="cancellationToken">Токен отмены операции</param>
+    /// <returns>Список водителей с количеством их рейсов</returns>
     public async Task<IReadOnlyList<DriverTripCountDto>> GetTopByTripCountAsync(
         int count = 5,
         CancellationToken cancellationToken = default)
@@ -78,6 +95,12 @@ public sealed class DriverService
             .ToList();
     }
 
+    /// <summary>
+    /// Удаляет водителя, если он не назначен на рейсы
+    /// </summary>
+    /// <param name="id">Идентификатор водителя</param>
+    /// <param name="cancellationToken">Токен отмены операции</param>
+    /// <returns>true, если водитель удалён</returns>
     public override async Task<bool> DeleteAsync(
         int id,
         CancellationToken cancellationToken = default)

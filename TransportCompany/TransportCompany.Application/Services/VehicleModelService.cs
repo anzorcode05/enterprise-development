@@ -5,12 +5,20 @@ using TransportCompany.Domain.Repositories;
 
 namespace TransportCompany.Application.Services;
 
+/// <summary>
+/// Сервис для работы с моделями транспорта
+/// </summary>
 public sealed class VehicleModelService
     : CrudService<VehicleModel, VehicleModelDto, VehicleModelUpsertDto>,
       IVehicleModelService
 {
     private readonly IRepository<Vehicle> _vehicles;
 
+    /// <summary>
+    /// Создаёт сервис моделей транспорта
+    /// </summary>
+    /// <param name="models">Репозиторий моделей транспорта</param>
+    /// <param name="vehicles">Репозиторий транспортных средств</param>
     public VehicleModelService(
         IRepository<VehicleModel> models,
         IRepository<Vehicle> vehicles)
@@ -19,9 +27,11 @@ public sealed class VehicleModelService
         _vehicles = vehicles;
     }
 
+    /// <inheritdoc/>
     protected override VehicleModelDto ToDto(VehicleModel model) =>
         new(model.Id, model.BodyType, model.BodyVolume);
 
+    /// <inheritdoc/>
     protected override Task<VehicleModel> CreateEntityAsync(
         VehicleModelUpsertDto request,
         int id)
@@ -34,6 +44,7 @@ public sealed class VehicleModelService
         });
     }
 
+    /// <inheritdoc/>
     protected override Task UpdateEntityAsync(
         VehicleModel model,
         VehicleModelUpsertDto request)
@@ -44,6 +55,12 @@ public sealed class VehicleModelService
         return Task.CompletedTask;
     }
 
+    /// <summary>
+    /// Удаляет модель транспорта, если она не используется транспортными средствами
+    /// </summary>
+    /// <param name="id">Идентификатор модели</param>
+    /// <param name="cancellationToken">Токен отмены операции</param>
+    /// <returns>true, если модель удалена</returns>
     public override async Task<bool> DeleteAsync(
         int id,
         CancellationToken cancellationToken = default)

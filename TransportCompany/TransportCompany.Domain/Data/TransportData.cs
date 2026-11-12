@@ -1,12 +1,16 @@
-
 using TransportCompany.Domain.Entities;
 using TransportCompany.Domain.Shared;
 
 namespace TransportCompany.Domain.Data;
 
-/// <summary>Начальные данные транспортной компании для лабораторной работы</summary>
+/// <summary>
+/// Начальные данные транспортной компании для лабораторной работы
+/// </summary>
 public static class TransportData
 {
+    /// <summary>
+    /// Коллекция моделей кузовов транспортных средств
+    /// </summary>
     public static IReadOnlyList<VehicleModel> VehicleModels { get; } =
     [
         new() { Id=1, BodyType=BodyType.Tent, BodyVolume=60 }, new() { Id=2, BodyType=BodyType.Refrigerator, BodyVolume=40 },
@@ -16,6 +20,9 @@ public static class TransportData
         new() { Id=9, BodyType=BodyType.Container, BodyVolume=100 }, new() { Id=10, BodyType=BodyType.Flatbed, BodyVolume=75 }
     ];
 
+    /// <summary>
+    /// Коллекция транспортных средств
+    /// </summary>
     public static IReadOnlyList<Vehicle> Vehicles { get; } =
     [
         new() { Id=1, LicensePlate="AA1234A", Brand="Volvo", LoadCapacity=20, VehicleModel=VehicleModels[0] },
@@ -30,6 +37,9 @@ public static class TransportData
         new() { Id=10, LicensePlate="JJ0123J", Brand="KAMAZ", LoadCapacity=12, VehicleModel=VehicleModels[9] }
     ];
 
+    /// <summary>
+    /// Коллекция водителей
+    /// </summary>
     public static IReadOnlyList<Driver> Drivers { get; } =
     [
         new() { Id=1, LicenseNumber="4501111111", FullName="Ivanov Ivan Ivanovich", Experience=15, LicenseCategory=DrivingLicenseCategory.CE },
@@ -44,6 +54,9 @@ public static class TransportData
         new() { Id=10, LicenseNumber="4510101010", FullName="Orlov Maxim Yurievich", Experience=10, LicenseCategory=DrivingLicenseCategory.C }
     ];
 
+    /// <summary>
+    /// Коллекция клиентов
+    /// </summary>
     public static IReadOnlyList<Client> Clients { get; } =
     [
         new() { Id=1, Name="Ivanov Ivan Ivanovich", Phone="+7 (900) 111-11-11" }, new() { Id=2, Name="Petrova Anna Sergeevna", Phone="+7 (900) 222-22-22" },
@@ -53,6 +66,9 @@ public static class TransportData
         new() { Id=9, Name="Popova Elena Vladimirovna", Phone="+7 (900) 999-99-99" }, new() { Id=10, Name="PAO Sever", Phone="+7 (900) 000-00-00" }
     ];
 
+    /// <summary>
+    /// Коллекция рейсов
+    /// </summary>
     public static IReadOnlyList<Trip> Trips { get; } =
     [
         new() { Id=1, Driver=Drivers[0], Vehicle=Vehicles[0], Client=Clients[0], Origin="Moscow", Destination="SPb", DepartureDate=new(2026,1,10), CargoWeight=15, Cost=80000 },
