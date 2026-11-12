@@ -8,20 +8,11 @@ namespace TransportCompany.Application.Services;
 /// <summary>
 /// Сервис для работы с водителями
 /// </summary>
-public sealed class DriverService
-    : CrudService<Driver, DriverDto, DriverUpsertDto>, IDriverService
+public sealed class DriverService(
+    IRepository<Driver> drivers,
+    IRepository<Trip> trips)
+    : CrudService<Driver, DriverDto, DriverUpsertDto>(drivers), IDriverService
 {
-    private readonly IRepository<Trip> _trips;
-
-    /// <summary>
-    /// Создаёт сервис водителей
-    /// </summary>
-    public DriverService(IRepository<Driver> drivers, IRepository<Trip> trips)
-        : base(drivers)
-    {
-        _trips = trips;
-    }
-
     /// <inheritdoc/>
     protected override DriverDto ToDto(Driver driver) =>
         new(
@@ -71,9 +62,9 @@ public sealed class DriverService
                 "Количество водителей должно быть от 1 до 100");
         }
 
-        var trips = await _trips.GetAllAsync();
+        var tripsList = await trips.GetAllAsync();
 
-        return trips
+        return tripsList
             .GroupBy(trip => trip.Driver.Id)
             .Select(group =>
             {
@@ -104,9 +95,10 @@ public sealed class DriverService
             return false;
         }
 
-        var trips = await _trips.FindAsync(trip => trip.Driver.Id == id);
+        var relatedTrips = await trips.FindAsync(
+            trip => trip.Driver.Id == id);
 
-        if (trips.Count > 0)
+        if (relatedTrips.Count > 0)
         {
             throw new InvalidOperationException(
                 "Нельзя удалить водителя, который назначен на рейсы");

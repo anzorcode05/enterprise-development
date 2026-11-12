@@ -37,16 +37,11 @@ public sealed class ClientsController(IClientService service)
     /// </summary>
     [HttpGet("analytics/top-by-cost")]
     [ProducesResponseType(typeof(IReadOnlyList<ClientCostDto>), StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
     public async Task<ActionResult<IReadOnlyList<ClientCostDto>>> TopByCost(
         [FromQuery] int count = 5,
         CancellationToken cancellationToken = default)
     {
-        if (count is < 1 or > 100)
-        {
-            return BadRequest("Параметр count должен быть от 1 до 100");
-        }
-
         var result = await service.GetTopByTotalCostAsync(
             count,
             cancellationToken);

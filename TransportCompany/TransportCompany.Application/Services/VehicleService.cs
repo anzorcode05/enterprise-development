@@ -9,25 +9,12 @@ namespace TransportCompany.Application.Services;
 /// <summary>
 /// Сервис для работы с транспортными средствами
 /// </summary>
-public sealed class VehicleService
-    : CrudService<Vehicle, VehicleDto, VehicleUpsertDto>, IVehicleService
+public sealed class VehicleService(
+    IRepository<Vehicle> vehicles,
+    IRepository<VehicleModel> models,
+    IRepository<Trip> trips)
+    : CrudService<Vehicle, VehicleDto, VehicleUpsertDto>(vehicles), IVehicleService
 {
-    private readonly IRepository<VehicleModel> _models;
-    private readonly IRepository<Trip> _trips;
-
-    /// <summary>
-    /// Создаёт сервис транспортных средств
-    /// </summary>
-    public VehicleService(
-        IRepository<Vehicle> vehicles,
-        IRepository<VehicleModel> models,
-        IRepository<Trip> trips)
-        : base(vehicles)
-    {
-        _models = models;
-        _trips = trips;
-    }
-
     /// <inheritdoc/>
     protected override VehicleDto ToDto(Vehicle vehicle)
     {
@@ -49,7 +36,7 @@ public sealed class VehicleService
         VehicleUpsertDto request,
         int id)
     {
-        var model = await _models.GetByIdAsync(request.VehicleModelId)
+        var model = await models.GetByIdAsync(request.VehicleModelId)
             ?? throw new KeyNotFoundException("Модель транспорта не найдена");
 
         return new Vehicle
@@ -67,7 +54,7 @@ public sealed class VehicleService
         Vehicle vehicle,
         VehicleUpsertDto request)
     {
-        var model = await _models.GetByIdAsync(request.VehicleModelId)
+        var model = await models.GetByIdAsync(request.VehicleModelId)
             ?? throw new KeyNotFoundException("Модель транспорта не найдена");
 
         vehicle.LicensePlate = request.LicensePlate.Trim();
@@ -84,9 +71,9 @@ public sealed class VehicleService
     {
         cancellationToken.ThrowIfCancellationRequested();
 
-        var trips = await _trips.GetAllAsync();
+        var tripsList = await trips.GetAllAsync();
 
-        return trips
+        return tripsList
             .Select(trip => trip.Vehicle)
             .GroupBy(vehicle => vehicle.Id)
             .Select(group => group.First())
@@ -103,14 +90,14 @@ public sealed class VehicleService
     {
         cancellationToken.ThrowIfCancellationRequested();
 
-        var trips = await _trips.GetAllAsync();
-        var vehicles = await Repository.GetAllAsync();
+        var tripsList = await trips.GetAllAsync();
+        var vehiclesList = await Repository.GetAllAsync();
 
-        var tripCounts = trips
+        var tripCounts = tripsList
             .GroupBy(trip => trip.Vehicle.Id)
             .ToDictionary(group => group.Key, group => group.Count());
 
-        return vehicles
+        return vehiclesList
             .OrderBy(vehicle => vehicle.Id)
             .Select(vehicle => new VehicleTripCountDto(
                 vehicle.Id,
@@ -135,10 +122,10 @@ public sealed class VehicleService
             return false;
         }
 
-        var trips = await _trips.FindAsync(
+        var relatedTrips = await trips.FindAsync(
             trip => trip.Vehicle.Id == id);
 
-        if (trips.Count > 0)
+        if (relatedTrips.Count > 0)
         {
             throw new InvalidOperationException(
                 "Нельзя удалить транспортное средство, которое используется в рейсах");

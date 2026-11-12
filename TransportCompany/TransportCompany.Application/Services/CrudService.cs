@@ -7,22 +7,15 @@ namespace TransportCompany.Application.Services;
 /// <summary>
 /// Базовый сервис для выполнения CRUD-операций
 /// </summary>
-public abstract class CrudService<TEntity, TRead, TUpsert>
+public abstract class CrudService<TEntity, TRead, TUpsert>(
+    IRepository<TEntity> repository)
     : ICrudService<int, TRead, TUpsert>
     where TEntity : class
 {
     /// <summary>
     /// Репозиторий для работы с сущностями
     /// </summary>
-    protected readonly IRepository<TEntity> Repository;
-
-    /// <summary>
-    /// Создаёт базовый CRUD-сервис
-    /// </summary>
-    protected CrudService(IRepository<TEntity> repository)
-    {
-        Repository = repository;
-    }
+    protected readonly IRepository<TEntity> Repository = repository;
 
     /// <summary>
     /// Преобразует сущность в DTO

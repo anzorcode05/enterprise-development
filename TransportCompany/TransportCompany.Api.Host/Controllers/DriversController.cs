@@ -21,16 +21,11 @@ public sealed class DriversController(IDriverService service)
     /// </summary>
     [HttpGet("analytics/top-by-trip-count")]
     [ProducesResponseType(typeof(IReadOnlyList<DriverTripCountDto>), StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
     public async Task<ActionResult<IReadOnlyList<DriverTripCountDto>>> TopByTrips(
         [FromQuery] int count = 5,
         CancellationToken cancellationToken = default)
     {
-        if (count is < 1 or > 100)
-        {
-            return BadRequest("Параметр count должен быть от 1 до 100");
-        }
-
         var result = await service.GetTopByTripCountAsync(
             count,
             cancellationToken);

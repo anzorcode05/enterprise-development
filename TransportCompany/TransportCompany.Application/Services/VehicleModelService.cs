@@ -8,23 +8,12 @@ namespace TransportCompany.Application.Services;
 /// <summary>
 /// Сервис для работы с моделями транспорта
 /// </summary>
-public sealed class VehicleModelService
-    : CrudService<VehicleModel, VehicleModelDto, VehicleModelUpsertDto>,
+public sealed class VehicleModelService(
+    IRepository<VehicleModel> models,
+    IRepository<Vehicle> vehicles)
+    : CrudService<VehicleModel, VehicleModelDto, VehicleModelUpsertDto>(models),
       IVehicleModelService
 {
-    private readonly IRepository<Vehicle> _vehicles;
-
-    /// <summary>
-    /// Создаёт сервис моделей транспорта
-    /// </summary>
-    public VehicleModelService(
-        IRepository<VehicleModel> models,
-        IRepository<Vehicle> vehicles)
-        : base(models)
-    {
-        _vehicles = vehicles;
-    }
-
     /// <inheritdoc/>
     protected override VehicleModelDto ToDto(VehicleModel model) =>
         new(model.Id, model.BodyType, model.BodyVolume);
@@ -67,10 +56,10 @@ public sealed class VehicleModelService
             return false;
         }
 
-        var vehicles = await _vehicles.FindAsync(
+        var relatedVehicles = await vehicles.FindAsync(
             vehicle => vehicle.VehicleModel.Id == id);
 
-        if (vehicles.Count > 0)
+        if (relatedVehicles.Count > 0)
         {
             throw new InvalidOperationException(
                 "Нельзя удалить модель, которая используется транспортом");

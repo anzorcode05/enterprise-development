@@ -8,20 +8,11 @@ namespace TransportCompany.Application.Services;
 /// <summary>
 /// Сервис для работы с клиентами
 /// </summary>
-public sealed class ClientService
-    : CrudService<Client, ClientDto, ClientUpsertDto>, IClientService
+public sealed class ClientService(
+    IRepository<Client> clients,
+    IRepository<Trip> trips)
+    : CrudService<Client, ClientDto, ClientUpsertDto>(clients), IClientService
 {
-    private readonly IRepository<Trip> _trips;
-
-    /// <summary>
-    /// Создаёт сервис клиентов
-    /// </summary>
-    public ClientService(IRepository<Client> clients, IRepository<Trip> trips)
-        : base(clients)
-    {
-        _trips = trips;
-    }
-
     /// <inheritdoc/>
     protected override ClientDto ToDto(Client client) =>
         new(client.Id, client.Name, client.Phone);
@@ -55,10 +46,10 @@ public sealed class ClientService
     {
         cancellationToken.ThrowIfCancellationRequested();
 
-        var trips = await _trips.FindAsync(
+        var tripsList = await trips.FindAsync(
             trip => trip.Vehicle.VehicleModel.Id == vehicleModelId);
 
-        return trips
+        return tripsList
             .Select(trip => trip.Client)
             .GroupBy(client => client.Id)
             .Select(group => group.First())
@@ -83,9 +74,9 @@ public sealed class ClientService
                 "Количество клиентов должно быть от 1 до 100");
         }
 
-        var trips = await _trips.GetAllAsync();
+        var tripsList = await trips.GetAllAsync();
 
-        return trips
+        return tripsList
             .GroupBy(trip => trip.Client.Id)
             .Select(group =>
             {
@@ -116,9 +107,10 @@ public sealed class ClientService
             return false;
         }
 
-        var trips = await _trips.FindAsync(trip => trip.Client.Id == id);
+        var relatedTrips = await trips.FindAsync(
+            trip => trip.Client.Id == id);
 
-        if (trips.Count > 0)
+        if (relatedTrips.Count > 0)
         {
             throw new InvalidOperationException(
                 "Нельзя удалить клиента, у которого есть рейсы");
