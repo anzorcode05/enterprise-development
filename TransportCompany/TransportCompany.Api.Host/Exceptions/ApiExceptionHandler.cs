@@ -4,10 +4,16 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace TransportCompany.Api.Host.Exceptions;
 
+/// <summary>
+/// Обрабатывает исключения, возникающие при выполнении API-запросов
+/// </summary>
 public sealed class ApiExceptionHandler(
     IProblemDetailsService problemDetailsService,
     ILogger<ApiExceptionHandler> logger) : IExceptionHandler
 {
+    /// <summary>
+    /// Формирует HTTP-ответ на основе возникшего исключения
+    /// </summary>
     public async ValueTask<bool> TryHandleAsync(
         HttpContext httpContext,
         Exception exception,

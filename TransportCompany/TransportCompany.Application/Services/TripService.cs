@@ -18,10 +18,6 @@ public sealed class TripService
     /// <summary>
     /// Создаёт сервис рейсов
     /// </summary>
-    /// <param name="trips">Репозиторий рейсов</param>
-    /// <param name="drivers">Репозиторий водителей</param>
-    /// <param name="vehicles">Репозиторий транспорта</param>
-    /// <param name="clients">Репозиторий клиентов</param>
     public TripService(
         IRepository<Trip> trips,
         IRepository<Driver> drivers,
@@ -107,9 +103,6 @@ public sealed class TripService
     /// <summary>
     /// Возвращает рейсы указанного клиента
     /// </summary>
-    /// <param name="clientId">Идентификатор клиента</param>
-    /// <param name="cancellationToken">Токен отмены операции</param>
-    /// <returns>Список рейсов клиента</returns>
     public async Task<IReadOnlyList<TripDto>> GetByClientIdAsync(
         int clientId,
         CancellationToken cancellationToken = default)
@@ -125,9 +118,6 @@ public sealed class TripService
     /// <summary>
     /// Возвращает рейсы указанного водителя
     /// </summary>
-    /// <param name="driverId">Идентификатор водителя</param>
-    /// <param name="cancellationToken">Токен отмены операции</param>
-    /// <returns>Список рейсов водителя</returns>
     public async Task<IReadOnlyList<TripDto>> GetByDriverIdAsync(
         int driverId,
         CancellationToken cancellationToken = default)

@@ -4,12 +4,21 @@ using TransportCompany.Application.Contracts.Clients;
 
 namespace TransportCompany.Api.Host.Controllers;
 
+/// <summary>
+/// Обрабатывает запросы для работы с клиентами
+/// </summary>
 [Route("api/clients")]
 public sealed class ClientsController(IClientService service)
     : ApiControllerBase<ClientDto, ClientUpsertDto>(service)
 {
+    /// <summary>
+    /// Возвращает идентификатор клиента
+    /// </summary>
     protected override int GetId(ClientDto item) => item.Id;
 
+    /// <summary>
+    /// Возвращает клиентов, использующих указанную модель транспорта
+    /// </summary>
     [HttpGet("by-vehicle-model/{vehicleModelId:int}")]
     [ProducesResponseType(typeof(IReadOnlyList<ClientDto>), StatusCodes.Status200OK)]
     public async Task<ActionResult<IReadOnlyList<ClientDto>>> ByVehicleModel(
@@ -23,6 +32,9 @@ public sealed class ClientsController(IClientService service)
         return Ok(result);
     }
 
+    /// <summary>
+    /// Возвращает клиентов с наибольшей общей стоимостью перевозок
+    /// </summary>
     [HttpGet("analytics/top-by-cost")]
     [ProducesResponseType(typeof(IReadOnlyList<ClientCostDto>), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]

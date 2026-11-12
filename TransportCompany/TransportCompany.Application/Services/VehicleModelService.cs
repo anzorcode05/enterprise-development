@@ -17,8 +17,6 @@ public sealed class VehicleModelService
     /// <summary>
     /// Создаёт сервис моделей транспорта
     /// </summary>
-    /// <param name="models">Репозиторий моделей транспорта</param>
-    /// <param name="vehicles">Репозиторий транспортных средств</param>
     public VehicleModelService(
         IRepository<VehicleModel> models,
         IRepository<Vehicle> vehicles)
@@ -58,9 +56,6 @@ public sealed class VehicleModelService
     /// <summary>
     /// Удаляет модель транспорта, если она не используется транспортными средствами
     /// </summary>
-    /// <param name="id">Идентификатор модели</param>
-    /// <param name="cancellationToken">Токен отмены операции</param>
-    /// <returns>true, если модель удалена</returns>
     public override async Task<bool> DeleteAsync(
         int id,
         CancellationToken cancellationToken = default)

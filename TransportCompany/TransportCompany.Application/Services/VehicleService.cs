@@ -18,9 +18,6 @@ public sealed class VehicleService
     /// <summary>
     /// Создаёт сервис транспортных средств
     /// </summary>
-    /// <param name="vehicles">Репозиторий транспортных средств</param>
-    /// <param name="models">Репозиторий моделей транспорта</param>
-    /// <param name="trips">Репозиторий рейсов</param>
     public VehicleService(
         IRepository<Vehicle> vehicles,
         IRepository<VehicleModel> models,
@@ -82,8 +79,6 @@ public sealed class VehicleService
     /// <summary>
     /// Возвращает транспортные средства, участвовавшие в рейсах
     /// </summary>
-    /// <param name="cancellationToken">Токен отмены операции</param>
-    /// <returns>Список транспортных средств</returns>
     public async Task<IReadOnlyList<VehicleDto>> GetVehiclesOnTripsAsync(
         CancellationToken cancellationToken = default)
     {
@@ -103,8 +98,6 @@ public sealed class VehicleService
     /// <summary>
     /// Возвращает количество рейсов для каждого транспортного средства
     /// </summary>
-    /// <param name="cancellationToken">Токен отмены операции</param>
-    /// <returns>Список транспортных средств с количеством рейсов</returns>
     public async Task<IReadOnlyList<VehicleTripCountDto>> GetTripCountsAsync(
         CancellationToken cancellationToken = default)
     {
@@ -129,9 +122,6 @@ public sealed class VehicleService
     /// <summary>
     /// Удаляет транспортное средство, если оно не используется в рейсах
     /// </summary>
-    /// <param name="id">Идентификатор транспортного средства</param>
-    /// <param name="cancellationToken">Токен отмены операции</param>
-    /// <returns>true, если транспортное средство удалено</returns>
     public override async Task<bool> DeleteAsync(
         int id,
         CancellationToken cancellationToken = default)

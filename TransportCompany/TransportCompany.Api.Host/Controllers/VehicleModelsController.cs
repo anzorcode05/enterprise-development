@@ -4,11 +4,17 @@ using TransportCompany.Application.Contracts.VehicleModels;
 
 namespace TransportCompany.Api.Host.Controllers;
 
-[Microsoft.AspNetCore.Mvc.Route("api/[controller]")]
+/// <summary>
+/// Обрабатывает запросы для работы с моделями транспорта
+/// </summary>
+[Route("api/[controller]")]
 public sealed class VehicleModelsController(
     IVehicleModelService service)
     : ApiControllerBase<VehicleModelDto, VehicleModelUpsertDto>(service)
 {
+    /// <summary>
+    /// Возвращает идентификатор модели транспорта
+    /// </summary>
     protected override int GetId(VehicleModelDto item)
     {
         return item.Id;

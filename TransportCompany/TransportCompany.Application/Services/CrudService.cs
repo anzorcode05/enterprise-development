@@ -7,9 +7,6 @@ namespace TransportCompany.Application.Services;
 /// <summary>
 /// Базовый сервис для выполнения CRUD-операций
 /// </summary>
-/// <typeparam name="TEntity">Тип сущности</typeparam>
-/// <typeparam name="TRead">Тип DTO для чтения</typeparam>
-/// <typeparam name="TUpsert">Тип DTO для создания и обновления</typeparam>
 public abstract class CrudService<TEntity, TRead, TUpsert>
     : ICrudService<int, TRead, TUpsert>
     where TEntity : class
@@ -22,7 +19,6 @@ public abstract class CrudService<TEntity, TRead, TUpsert>
     /// <summary>
     /// Создаёт базовый CRUD-сервис
     /// </summary>
-    /// <param name="repository">Репозиторий сущностей</param>
     protected CrudService(IRepository<TEntity> repository)
     {
         Repository = repository;
@@ -31,16 +27,11 @@ public abstract class CrudService<TEntity, TRead, TUpsert>
     /// <summary>
     /// Преобразует сущность в DTO
     /// </summary>
-    /// <param name="entity">Сущность для преобразования</param>
-    /// <returns>Объект DTO</returns>
     protected abstract TRead ToDto(TEntity entity);
 
     /// <summary>
     /// Создаёт сущность на основе входных данных
     /// </summary>
-    /// <param name="request">Данные для создания</param>
-    /// <param name="id">Идентификатор новой сущности</param>
-    /// <returns>Созданная сущность</returns>
     protected abstract Task<TEntity> CreateEntityAsync(
         TUpsert request,
         int id);
@@ -48,8 +39,6 @@ public abstract class CrudService<TEntity, TRead, TUpsert>
     /// <summary>
     /// Обновляет данные существующей сущности
     /// </summary>
-    /// <param name="entity">Сущность для обновления</param>
-    /// <param name="request">Новые данные</param>
     protected abstract Task UpdateEntityAsync(
         TEntity entity,
         TUpsert request);
@@ -57,8 +46,6 @@ public abstract class CrudService<TEntity, TRead, TUpsert>
     /// <summary>
     /// Возвращает все сущности
     /// </summary>
-    /// <param name="cancellationToken">Токен отмены операции</param>
-    /// <returns>Список DTO</returns>
     public async Task<IReadOnlyList<TRead>> GetAllAsync(
         CancellationToken cancellationToken = default)
     {
@@ -72,9 +59,6 @@ public abstract class CrudService<TEntity, TRead, TUpsert>
     /// <summary>
     /// Возвращает сущность по идентификатору
     /// </summary>
-    /// <param name="id">Идентификатор сущности</param>
-    /// <param name="cancellationToken">Токен отмены операции</param>
-    /// <returns>DTO сущности или null, если запись не найдена</returns>
     public async Task<TRead?> GetByIdAsync(
         int id,
         CancellationToken cancellationToken = default)
@@ -89,9 +73,6 @@ public abstract class CrudService<TEntity, TRead, TUpsert>
     /// <summary>
     /// Создаёт новую сущность
     /// </summary>
-    /// <param name="request">Данные для создания</param>
-    /// <param name="cancellationToken">Токен отмены операции</param>
-    /// <returns>DTO созданной сущности</returns>
     public async Task<TRead> CreateAsync(
         TUpsert request,
         CancellationToken cancellationToken = default)
@@ -109,10 +90,6 @@ public abstract class CrudService<TEntity, TRead, TUpsert>
     /// <summary>
     /// Обновляет существующую сущность
     /// </summary>
-    /// <param name="id">Идентификатор сущности</param>
-    /// <param name="request">Новые данные</param>
-    /// <param name="cancellationToken">Токен отмены операции</param>
-    /// <returns>DTO обновлённой сущности или null, если запись не найдена</returns>
     public async Task<TRead?> UpdateAsync(
         int id,
         TUpsert request,
@@ -137,9 +114,6 @@ public abstract class CrudService<TEntity, TRead, TUpsert>
     /// <summary>
     /// Удаляет сущность по идентификатору
     /// </summary>
-    /// <param name="id">Идентификатор сущности</param>
-    /// <param name="cancellationToken">Токен отмены операции</param>
-    /// <returns>true, если сущность удалена</returns>
     public virtual async Task<bool> DeleteAsync(
         int id,
         CancellationToken cancellationToken = default)

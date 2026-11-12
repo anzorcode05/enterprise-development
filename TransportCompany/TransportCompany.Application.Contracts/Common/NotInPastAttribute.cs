@@ -20,9 +20,6 @@ public sealed class NotInPastAttribute : ValidationAttribute
     /// <summary>
     /// Проверяет допустимость указанного значения
     /// </summary>
-    /// <param name="value">Проверяемое значение</param>
-    /// <param name="validationContext">Контекст проверки</param>
-    /// <returns>Результат проверки</returns>
     protected override ValidationResult? IsValid(
         object? value,
         ValidationContext validationContext)

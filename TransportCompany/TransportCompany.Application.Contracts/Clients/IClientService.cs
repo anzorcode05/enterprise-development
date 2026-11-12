@@ -12,9 +12,6 @@ public interface IClientService
     /// <summary>
     /// Возвращает клиентов, использующих указанную модель транспорта
     /// </summary>
-    /// <param name="vehicleModelId">Идентификатор модели транспорта</param>
-    /// <param name="cancellationToken">Токен отмены операции</param>
-    /// <returns>Список подходящих клиентов</returns>
     Task<IReadOnlyList<ClientDto>> GetByVehicleModelAsync(
         int vehicleModelId,
         CancellationToken cancellationToken = default);
@@ -22,9 +19,6 @@ public interface IClientService
     /// <summary>
     /// Возвращает клиентов с наибольшей общей стоимостью перевозок
     /// </summary>
-    /// <param name="count">Количество клиентов в результате</param>
-    /// <param name="cancellationToken">Токен отмены операции</param>
-    /// <returns>Список клиентов с суммарной стоимостью перевозок</returns>
     Task<IReadOnlyList<ClientCostDto>> GetTopByTotalCostAsync(
         int count = 5,
         CancellationToken cancellationToken = default);

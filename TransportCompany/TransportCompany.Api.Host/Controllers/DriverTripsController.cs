@@ -5,12 +5,18 @@ using TransportCompany.Application.Contracts.Trips;
 
 namespace TransportCompany.Api.Host.Controllers;
 
+/// <summary>
+/// Обрабатывает запросы для получения рейсов водителей
+/// </summary>
 [ApiController]
 [Route("api/drivers/{driverId:int}/trips")]
 public sealed class DriverTripsController(
     IDriverService driverService,
     ITripService tripService) : ControllerBase
 {
+    /// <summary>
+    /// Возвращает список рейсов указанного водителя
+    /// </summary>
     [HttpGet]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]

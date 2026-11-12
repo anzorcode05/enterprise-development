@@ -16,8 +16,6 @@ public sealed class DriverService
     /// <summary>
     /// Создаёт сервис водителей
     /// </summary>
-    /// <param name="drivers">Репозиторий водителей</param>
-    /// <param name="trips">Репозиторий рейсов</param>
     public DriverService(IRepository<Driver> drivers, IRepository<Trip> trips)
         : base(drivers)
     {
@@ -60,9 +58,6 @@ public sealed class DriverService
     /// <summary>
     /// Возвращает водителей с наибольшим количеством рейсов
     /// </summary>
-    /// <param name="count">Количество водителей в результате</param>
-    /// <param name="cancellationToken">Токен отмены операции</param>
-    /// <returns>Список водителей с количеством их рейсов</returns>
     public async Task<IReadOnlyList<DriverTripCountDto>> GetTopByTripCountAsync(
         int count = 5,
         CancellationToken cancellationToken = default)
@@ -98,9 +93,6 @@ public sealed class DriverService
     /// <summary>
     /// Удаляет водителя, если он не назначен на рейсы
     /// </summary>
-    /// <param name="id">Идентификатор водителя</param>
-    /// <param name="cancellationToken">Токен отмены операции</param>
-    /// <returns>true, если водитель удалён</returns>
     public override async Task<bool> DeleteAsync(
         int id,
         CancellationToken cancellationToken = default)

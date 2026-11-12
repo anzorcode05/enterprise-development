@@ -16,8 +16,6 @@ public sealed class ClientService
     /// <summary>
     /// Создаёт сервис клиентов
     /// </summary>
-    /// <param name="clients">Репозиторий клиентов</param>
-    /// <param name="trips">Репозиторий рейсов</param>
     public ClientService(IRepository<Client> clients, IRepository<Trip> trips)
         : base(clients)
     {
@@ -51,9 +49,6 @@ public sealed class ClientService
     /// <summary>
     /// Возвращает клиентов, которые пользовались указанной моделью транспорта
     /// </summary>
-    /// <param name="vehicleModelId">Идентификатор модели транспорта</param>
-    /// <param name="cancellationToken">Токен отмены операции</param>
-    /// <returns>Список клиентов</returns>
     public async Task<IReadOnlyList<ClientDto>> GetByVehicleModelAsync(
         int vehicleModelId,
         CancellationToken cancellationToken = default)
@@ -75,9 +70,6 @@ public sealed class ClientService
     /// <summary>
     /// Возвращает клиентов с наибольшей общей стоимостью рейсов
     /// </summary>
-    /// <param name="count">Количество клиентов в результате</param>
-    /// <param name="cancellationToken">Токен отмены операции</param>
-    /// <returns>Список клиентов с общей стоимостью их рейсов</returns>
     public async Task<IReadOnlyList<ClientCostDto>> GetTopByTotalCostAsync(
         int count = 5,
         CancellationToken cancellationToken = default)
@@ -113,9 +105,6 @@ public sealed class ClientService
     /// <summary>
     /// Удаляет клиента, если у него нет связанных рейсов
     /// </summary>
-    /// <param name="id">Идентификатор клиента</param>
-    /// <param name="cancellationToken">Токен отмены операции</param>
-    /// <returns>true, если клиент удалён</returns>
     public override async Task<bool> DeleteAsync(
         int id,
         CancellationToken cancellationToken = default)
