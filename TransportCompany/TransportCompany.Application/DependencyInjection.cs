@@ -18,7 +18,6 @@ public static class DependencyInjection
         /// <summary>
         /// Регистрирует сервисы прикладного слоя
         /// </summary>
-        /// <returns>Коллекция зарегистрированных сервисов</returns>
         public IServiceCollection AddApplication()
         {
             services.AddSingleton<IClientService, ClientService>();

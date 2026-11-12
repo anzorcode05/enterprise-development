@@ -1,4 +1,3 @@
-
 using System.ComponentModel.DataAnnotations;
 
 namespace TransportCompany.Application.Contracts.Common;
@@ -24,18 +23,14 @@ public sealed class NotInPastAttribute : ValidationAttribute
         object? value,
         ValidationContext validationContext)
     {
-        if (value is null)
-        {
-            return ValidationResult.Success;
-        }
+        var today = DateOnly.FromDateTime(DateTime.Today);
 
-        if (value is not DateTime date)
+        return value switch
         {
-            return new ValidationResult(ErrorMessage);
-        }
-
-        return date.Date >= DateTime.Today
-            ? ValidationResult.Success
-            : new ValidationResult(ErrorMessage);
+            null => ValidationResult.Success,
+            DateOnly date when date >= today => ValidationResult.Success,
+            DateTime dateTime when DateOnly.FromDateTime(dateTime) >= today => ValidationResult.Success,
+            _ => new ValidationResult(ErrorMessage)
+        };
     }
 }
