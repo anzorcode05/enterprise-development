@@ -4,27 +4,41 @@ using System.ComponentModel.DataAnnotations;
 namespace TransportCompany.Application.Contracts.Common;
 
 /// <summary>
-/// Проверяет, что дата не находится в прошлом
+/// Проверяет, что указанная дата не находится в прошлом
 /// </summary>
-[AttributeUsage(AttributeTargets.Property | AttributeTargets.Parameter)]
+[AttributeUsage(AttributeTargets.Property | AttributeTargets.Field | AttributeTargets.Parameter)]
 public sealed class NotInPastAttribute : ValidationAttribute
 {
+    /// <summary>
+    /// Создаёт атрибут проверки даты
+    /// </summary>
     public NotInPastAttribute()
-        : base("Дата не может быть в прошлом.")
     {
+        ErrorMessage = "Дата не может находиться в прошлом";
     }
 
+    /// <summary>
+    /// Проверяет допустимость указанного значения
+    /// </summary>
+    /// <param name="value">Проверяемое значение</param>
+    /// <param name="validationContext">Контекст проверки</param>
+    /// <returns>Результат проверки</returns>
     protected override ValidationResult? IsValid(
         object? value,
         ValidationContext validationContext)
     {
-        if (value is not DateOnly date)
+        if (value is null)
         {
             return ValidationResult.Success;
         }
 
-        return date < DateOnly.FromDateTime(DateTime.Today)
-            ? new ValidationResult(ErrorMessage)
-            : ValidationResult.Success;
+        if (value is not DateTime date)
+        {
+            return new ValidationResult(ErrorMessage);
+        }
+
+        return date.Date >= DateTime.Today
+            ? ValidationResult.Success
+            : new ValidationResult(ErrorMessage);
     }
 }
