@@ -9,4 +9,4 @@ namespace TransportCompany.Application.Contracts.VehicleModels;
 /// </summary>
 public sealed record VehicleModelUpsertDto(
     BodyType BodyType,
-    [property: Range(0.01, 10000)] double BodyVolume);
+    [Range(0.01, 10000)] double BodyVolume);
