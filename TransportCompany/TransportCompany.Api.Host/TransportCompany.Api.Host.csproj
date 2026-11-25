@@ -16,5 +16,6 @@
 		<ProjectReference Include="..\TransportCompany.Application\TransportCompany.Application.csproj" />
 		<ProjectReference Include="..\TransportCompany.Application.Contracts\TransportCompany.Application.Contracts.csproj" />
 		<ProjectReference Include="..\TransportCompany.Infrastructure.InMemory\TransportCompany.Infrastructure.InMemory.csproj" />
+		<ProjectReference Include="..\TransportCompany.Infrastructure.PostgreSql\TransportCompany.Infrastructure.PostgreSql.csproj" />
 	</ItemGroup>
 </Project>

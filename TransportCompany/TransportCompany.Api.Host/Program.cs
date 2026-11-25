@@ -5,6 +5,7 @@ using TransportCompany.Api.Host.Exceptions;
 using TransportCompany.Api.Host.Middleware;
 using TransportCompany.Application;
 using TransportCompany.Infrastructure.InMemory;
+using TransportCompany.Infrastructure.PostgreSql;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -21,6 +22,7 @@ builder.Services.AddProblemDetails();
 builder.Services.AddExceptionHandler<ApiExceptionHandler>();
 
 builder.Services.AddInMemoryStorage();
+builder.Services.AddPostgreSqlDatabase(builder.Configuration);
 builder.Services.AddApplication();
 
 var app = builder.Build();
