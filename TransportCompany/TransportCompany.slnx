@@ -5,5 +5,6 @@
   <Project Path="TransportCompany.Application/TransportCompany.Application.csproj" />
   <Project Path="TransportCompany.Infrastructure.InMemory/TransportCompany.Infrastructure.InMemory.csproj" />
   <Project Path="TransportCompany.Api.Host/TransportCompany.Api.Host.csproj" />
+  <Project Path="TransportCompany.Infrastructure.PostgreSql/TransportCompany.Infrastructure.PostgreSql.csproj" />
   <Project Path="TransportCompany.Tests/TransportCompany.Tests.csproj" />
 </Solution>
