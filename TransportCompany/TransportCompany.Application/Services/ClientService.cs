@@ -8,9 +8,7 @@ namespace TransportCompany.Application.Services;
 /// <summary>
 /// Сервис для работы с клиентами
 /// </summary>
-public sealed class ClientService(
-    IRepository<Client> clients,
-    IRepository<Trip> trips)
+public sealed class ClientService(IClientRepository clients)
     : CrudService<Client, ClientDto, ClientUpsertDto>(clients), IClientService
 {
     /// <inheritdoc/>
@@ -18,19 +16,27 @@ public sealed class ClientService(
         new(client.Id, client.Name, client.Phone);
 
     /// <inheritdoc/>
-    protected override Task<Client> CreateEntityAsync(ClientUpsertDto request, int id)
+    protected override Task<Client> CreateEntityAsync(
+        ClientUpsertDto request,
+        CancellationToken cancellationToken)
     {
+        cancellationToken.ThrowIfCancellationRequested();
+
         return Task.FromResult(new Client
         {
-            Id = id,
             Name = request.Name.Trim(),
             Phone = request.Phone.Trim()
         });
     }
 
     /// <inheritdoc/>
-    protected override Task UpdateEntityAsync(Client client, ClientUpsertDto request)
+    protected override Task UpdateEntityAsync(
+        Client client,
+        ClientUpsertDto request,
+        CancellationToken cancellationToken)
     {
+        cancellationToken.ThrowIfCancellationRequested();
+
         client.Name = request.Name.Trim();
         client.Phone = request.Phone.Trim();
 
@@ -44,18 +50,11 @@ public sealed class ClientService(
         int vehicleModelId,
         CancellationToken cancellationToken = default)
     {
-        cancellationToken.ThrowIfCancellationRequested();
+        var clientsList = await clients.GetByVehicleModelAsync(
+            vehicleModelId,
+            cancellationToken);
 
-        var tripsList = await trips.FindAsync(
-            trip => trip.Vehicle.VehicleModel.Id == vehicleModelId);
-
-        return tripsList
-            .Select(trip => trip.Client)
-            .GroupBy(client => client.Id)
-            .Select(group => group.First())
-            .OrderBy(client => client.Name)
-            .Select(ToDto)
-            .ToList();
+        return clientsList.Select(ToDto).ToList();
     }
 
     /// <summary>
@@ -65,8 +64,6 @@ public sealed class ClientService(
         int count = 5,
         CancellationToken cancellationToken = default)
     {
-        cancellationToken.ThrowIfCancellationRequested();
-
         if (count is < 1 or > 100)
         {
             throw new ArgumentOutOfRangeException(
@@ -74,22 +71,15 @@ public sealed class ClientService(
                 "Количество клиентов должно быть от 1 до 100");
         }
 
-        var tripsList = await trips.GetAllAsync();
+        var summaries = await clients.GetTopByTotalCostAsync(
+            count,
+            cancellationToken);
 
-        return tripsList
-            .GroupBy(trip => trip.Client.Id)
-            .Select(group =>
-            {
-                var client = group.First().Client;
-
-                return new ClientCostDto(
-                    client.Id,
-                    client.Name,
-                    group.Sum(trip => trip.Cost));
-            })
-            .OrderByDescending(item => item.TotalCost)
-            .ThenBy(item => item.ClientName)
-            .Take(count)
+        return summaries
+            .Select(item => new ClientCostDto(
+                item.ClientId,
+                item.ClientName,
+                item.TotalCost))
             .ToList();
     }
 
@@ -100,22 +90,17 @@ public sealed class ClientService(
         int id,
         CancellationToken cancellationToken = default)
     {
-        cancellationToken.ThrowIfCancellationRequested();
-
-        if (await Repository.GetByIdAsync(id) is null)
+        if (await Repository.GetByIdAsync(id, cancellationToken) is null)
         {
             return false;
         }
 
-        var relatedTrips = await trips.FindAsync(
-            trip => trip.Client.Id == id);
-
-        if (relatedTrips.Count > 0)
+        if (await clients.HasTripsAsync(id, cancellationToken))
         {
             throw new InvalidOperationException(
                 "Нельзя удалить клиента, у которого есть рейсы");
         }
 
-        return await Repository.DeleteAsync(id);
+        return await Repository.DeleteAsync(id, cancellationToken);
     }
 }

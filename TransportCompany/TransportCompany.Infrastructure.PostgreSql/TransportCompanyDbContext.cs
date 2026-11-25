@@ -1,5 +1,6 @@
 
 using Microsoft.EntityFrameworkCore;
+using TransportCompany.Domain.Data;
 using TransportCompany.Domain.Entities;
 
 namespace TransportCompany.Infrastructure.PostgreSql;
@@ -68,6 +69,8 @@ public sealed class TransportCompanyDbContext(
                 .HasColumnName("phone")
                 .HasMaxLength(40)
                 .IsRequired();
+
+            entity.HasData(TransportData.Clients);
         });
     }
 
@@ -105,6 +108,8 @@ public sealed class TransportCompanyDbContext(
                 .HasConversion<string>()
                 .HasMaxLength(2)
                 .IsRequired();
+
+            entity.HasData(TransportData.Drivers);
         });
     }
 
@@ -129,6 +134,8 @@ public sealed class TransportCompanyDbContext(
             entity.Property(x => x.BodyVolume)
                 .HasColumnName("body_volume")
                 .IsRequired();
+
+            entity.HasData(TransportData.VehicleModels);
         });
     }
 
@@ -161,14 +168,24 @@ public sealed class TransportCompanyDbContext(
                 .HasColumnName("load_capacity")
                 .IsRequired();
 
-            entity.Property<int>("VehicleModelId")
+            entity.Property(x => x.VehicleModelId)
                 .HasColumnName("vehicle_model_id")
                 .IsRequired();
 
             entity.HasOne(x => x.VehicleModel)
                 .WithMany()
-                .HasForeignKey("VehicleModelId")
+                .HasForeignKey(x => x.VehicleModelId)
                 .OnDelete(DeleteBehavior.Restrict);
+
+            entity.HasData(
+                TransportData.Vehicles.Select(vehicle => new
+                {
+                    vehicle.Id,
+                    vehicle.LicensePlate,
+                    vehicle.Brand,
+                    vehicle.LoadCapacity,
+                    VehicleModelId = vehicle.VehicleModel.Id
+                }));
         });
     }
 
@@ -184,31 +201,31 @@ public sealed class TransportCompanyDbContext(
                 .HasColumnName("id")
                 .UseIdentityByDefaultColumn();
 
-            entity.Property<int>("DriverId")
+            entity.Property(x => x.DriverId)
                 .HasColumnName("driver_id")
                 .IsRequired();
 
-            entity.Property<int>("VehicleId")
+            entity.Property(x => x.VehicleId)
                 .HasColumnName("vehicle_id")
                 .IsRequired();
 
-            entity.Property<int>("ClientId")
+            entity.Property(x => x.ClientId)
                 .HasColumnName("client_id")
                 .IsRequired();
 
             entity.HasOne(x => x.Driver)
                 .WithMany()
-                .HasForeignKey("DriverId")
+                .HasForeignKey(x => x.DriverId)
                 .OnDelete(DeleteBehavior.Restrict);
 
             entity.HasOne(x => x.Vehicle)
                 .WithMany()
-                .HasForeignKey("VehicleId")
+                .HasForeignKey(x => x.VehicleId)
                 .OnDelete(DeleteBehavior.Restrict);
 
             entity.HasOne(x => x.Client)
                 .WithMany()
-                .HasForeignKey("ClientId")
+                .HasForeignKey(x => x.ClientId)
                 .OnDelete(DeleteBehavior.Restrict);
 
             entity.Property(x => x.Origin)
@@ -233,6 +250,20 @@ public sealed class TransportCompanyDbContext(
                 .HasColumnName("cost")
                 .HasPrecision(12, 2)
                 .IsRequired();
+
+            entity.HasData(
+                TransportData.Trips.Select(trip => new
+                {
+                    trip.Id,
+                    DriverId = trip.Driver.Id,
+                    VehicleId = trip.Vehicle.Id,
+                    ClientId = trip.Client.Id,
+                    trip.Origin,
+                    trip.Destination,
+                    trip.DepartureDate,
+                    trip.CargoWeight,
+                    trip.Cost
+                }));
         });
     }
 }

@@ -21,27 +21,32 @@ public static class DependencyInjection
             services.AddSingleton<IRepository<Client>>(
                 _ => new InMemoryRepository<Client>(
                     TransportData.Clients,
-                    x => x.Id));
+                    x => x.Id,
+                    (x, id) => x.Id = id));
 
             services.AddSingleton<IRepository<Driver>>(
                 _ => new InMemoryRepository<Driver>(
                     TransportData.Drivers,
-                    x => x.Id));
+                    x => x.Id,
+                    (x, id) => x.Id = id));
 
             services.AddSingleton<IRepository<VehicleModel>>(
                 _ => new InMemoryRepository<VehicleModel>(
                     TransportData.VehicleModels,
-                    x => x.Id));
+                    x => x.Id,
+                    (x, id) => x.Id = id));
 
             services.AddSingleton<IRepository<Vehicle>>(
                 _ => new InMemoryRepository<Vehicle>(
                     TransportData.Vehicles,
-                    x => x.Id));
+                    x => x.Id,
+                    (x, id) => x.Id = id));
 
             services.AddSingleton<IRepository<Trip>>(
                 _ => new InMemoryRepository<Trip>(
                     TransportData.Trips,
-                    x => x.Id));
+                    x => x.Id,
+                    (x, id) => x.Id = id));
 
             return services;
         }

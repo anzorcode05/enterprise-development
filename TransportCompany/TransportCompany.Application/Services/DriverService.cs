@@ -8,9 +8,7 @@ namespace TransportCompany.Application.Services;
 /// <summary>
 /// Сервис для работы с водителями
 /// </summary>
-public sealed class DriverService(
-    IRepository<Driver> drivers,
-    IRepository<Trip> trips)
+public sealed class DriverService(IDriverRepository drivers)
     : CrudService<Driver, DriverDto, DriverUpsertDto>(drivers), IDriverService
 {
     /// <inheritdoc/>
@@ -23,11 +21,14 @@ public sealed class DriverService(
             driver.LicenseCategory);
 
     /// <inheritdoc/>
-    protected override Task<Driver> CreateEntityAsync(DriverUpsertDto request, int id)
+    protected override Task<Driver> CreateEntityAsync(
+        DriverUpsertDto request,
+        CancellationToken cancellationToken)
     {
+        cancellationToken.ThrowIfCancellationRequested();
+
         return Task.FromResult(new Driver
         {
-            Id = id,
             LicenseNumber = request.LicenseNumber.Trim(),
             FullName = request.FullName.Trim(),
             Experience = request.Experience,
@@ -36,8 +37,13 @@ public sealed class DriverService(
     }
 
     /// <inheritdoc/>
-    protected override Task UpdateEntityAsync(Driver driver, DriverUpsertDto request)
+    protected override Task UpdateEntityAsync(
+        Driver driver,
+        DriverUpsertDto request,
+        CancellationToken cancellationToken)
     {
+        cancellationToken.ThrowIfCancellationRequested();
+
         driver.LicenseNumber = request.LicenseNumber.Trim();
         driver.FullName = request.FullName.Trim();
         driver.Experience = request.Experience;
@@ -53,8 +59,6 @@ public sealed class DriverService(
         int count = 5,
         CancellationToken cancellationToken = default)
     {
-        cancellationToken.ThrowIfCancellationRequested();
-
         if (count is < 1 or > 100)
         {
             throw new ArgumentOutOfRangeException(
@@ -62,22 +66,15 @@ public sealed class DriverService(
                 "Количество водителей должно быть от 1 до 100");
         }
 
-        var tripsList = await trips.GetAllAsync();
+        var summaries = await drivers.GetTopByTripCountAsync(
+            count,
+            cancellationToken);
 
-        return tripsList
-            .GroupBy(trip => trip.Driver.Id)
-            .Select(group =>
-            {
-                var driver = group.First().Driver;
-
-                return new DriverTripCountDto(
-                    driver.Id,
-                    driver.FullName,
-                    group.Count());
-            })
-            .OrderByDescending(item => item.TripCount)
-            .ThenBy(item => item.DriverId)
-            .Take(count)
+        return summaries
+            .Select(item => new DriverTripCountDto(
+                item.DriverId,
+                item.DriverName,
+                item.TripCount))
             .ToList();
     }
 
@@ -88,22 +85,17 @@ public sealed class DriverService(
         int id,
         CancellationToken cancellationToken = default)
     {
-        cancellationToken.ThrowIfCancellationRequested();
-
-        if (await Repository.GetByIdAsync(id) is null)
+        if (await Repository.GetByIdAsync(id, cancellationToken) is null)
         {
             return false;
         }
 
-        var relatedTrips = await trips.FindAsync(
-            trip => trip.Driver.Id == id);
-
-        if (relatedTrips.Count > 0)
+        if (await drivers.HasTripsAsync(id, cancellationToken))
         {
             throw new InvalidOperationException(
                 "Нельзя удалить водителя, который назначен на рейсы");
         }
 
-        return await Repository.DeleteAsync(id);
+        return await Repository.DeleteAsync(id, cancellationToken);
     }
 }

@@ -11,7 +11,7 @@ public sealed class Driver
     /// <summary>
     /// Идентификатор водителя
     /// </summary>
-    public required int Id { get; set; }
+    public int Id { get; set; }
 
     /// <summary>
     /// Номер водительского удостоверения

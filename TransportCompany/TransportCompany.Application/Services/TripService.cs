@@ -9,7 +9,7 @@ namespace TransportCompany.Application.Services;
 /// Сервис для работы с рейсами
 /// </summary>
 public sealed class TripService(
-    IRepository<Trip> trips,
+    ITripRepository trips,
     IRepository<Driver> drivers,
     IRepository<Vehicle> vehicles,
     IRepository<Client> clients)
@@ -36,20 +36,25 @@ public sealed class TripService(
     /// <inheritdoc/>
     protected override async Task<Trip> CreateEntityAsync(
         TripUpsertDto request,
-        int id)
+        CancellationToken cancellationToken)
     {
-        var driver = await drivers.GetByIdAsync(request.DriverId)
+        var driver = await drivers.GetByIdAsync(
+            request.DriverId,
+            cancellationToken)
             ?? throw new KeyNotFoundException("Водитель не найден");
 
-        var vehicle = await vehicles.GetByIdAsync(request.VehicleId)
+        var vehicle = await vehicles.GetByIdAsync(
+            request.VehicleId,
+            cancellationToken)
             ?? throw new KeyNotFoundException("Транспортное средство не найдено");
 
-        var client = await clients.GetByIdAsync(request.ClientId)
+        var client = await clients.GetByIdAsync(
+            request.ClientId,
+            cancellationToken)
             ?? throw new KeyNotFoundException("Клиент не найден");
 
         return new Trip
         {
-            Id = id,
             Driver = driver,
             Vehicle = vehicle,
             Client = client,
@@ -64,15 +69,22 @@ public sealed class TripService(
     /// <inheritdoc/>
     protected override async Task UpdateEntityAsync(
         Trip trip,
-        TripUpsertDto request)
+        TripUpsertDto request,
+        CancellationToken cancellationToken)
     {
-        var driver = await drivers.GetByIdAsync(request.DriverId)
+        var driver = await drivers.GetByIdAsync(
+            request.DriverId,
+            cancellationToken)
             ?? throw new KeyNotFoundException("Водитель не найден");
 
-        var vehicle = await vehicles.GetByIdAsync(request.VehicleId)
+        var vehicle = await vehicles.GetByIdAsync(
+            request.VehicleId,
+            cancellationToken)
             ?? throw new KeyNotFoundException("Транспортное средство не найдено");
 
-        var client = await clients.GetByIdAsync(request.ClientId)
+        var client = await clients.GetByIdAsync(
+            request.ClientId,
+            cancellationToken)
             ?? throw new KeyNotFoundException("Клиент не найден");
 
         trip.Driver = driver;
@@ -92,10 +104,9 @@ public sealed class TripService(
         int clientId,
         CancellationToken cancellationToken = default)
     {
-        cancellationToken.ThrowIfCancellationRequested();
-
-        var tripsList = await Repository.FindAsync(
-            trip => trip.Client.Id == clientId);
+        var tripsList = await trips.GetByClientIdAsync(
+            clientId,
+            cancellationToken);
 
         return tripsList.Select(ToDto).ToList();
     }
@@ -107,10 +118,9 @@ public sealed class TripService(
         int driverId,
         CancellationToken cancellationToken = default)
     {
-        cancellationToken.ThrowIfCancellationRequested();
-
-        var tripsList = await Repository.FindAsync(
-            trip => trip.Driver.Id == driverId);
+        var tripsList = await trips.GetByDriverIdAsync(
+            driverId,
+            cancellationToken);
 
         return tripsList.Select(ToDto).ToList();
     }

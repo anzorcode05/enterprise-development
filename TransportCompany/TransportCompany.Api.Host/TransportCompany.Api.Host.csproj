@@ -8,6 +8,10 @@
 
 	<ItemGroup>
 		<PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="10.0.0" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="10.0.15">
+		  <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+		  <PrivateAssets>all</PrivateAssets>
+		</PackageReference>
 		<PackageReference Include="Microsoft.OpenApi" Version="2.7.5" />
 		<PackageReference Include="Scalar.AspNetCore" Version="2.1.6" />
 	</ItemGroup>
@@ -15,7 +19,6 @@
 	<ItemGroup>
 		<ProjectReference Include="..\TransportCompany.Application\TransportCompany.Application.csproj" />
 		<ProjectReference Include="..\TransportCompany.Application.Contracts\TransportCompany.Application.Contracts.csproj" />
-		<ProjectReference Include="..\TransportCompany.Infrastructure.InMemory\TransportCompany.Infrastructure.InMemory.csproj" />
 		<ProjectReference Include="..\TransportCompany.Infrastructure.PostgreSql\TransportCompany.Infrastructure.PostgreSql.csproj" />
 	</ItemGroup>
 </Project>

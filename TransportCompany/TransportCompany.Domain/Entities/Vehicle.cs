@@ -9,7 +9,7 @@ public sealed class Vehicle
     /// <summary>
     /// Идентификатор транспортного средства
     /// </summary>
-    public required int Id { get; set; }
+    public int Id { get; set; }
 
     /// <summary>
     /// Государственный регистрационный номер
@@ -25,6 +25,11 @@ public sealed class Vehicle
     /// Максимальная грузоподъёмность в тоннах
     /// </summary>
     public double LoadCapacity { get; set; }
+
+    /// <summary>
+    /// Идентификатор модели транспортного средства
+    /// </summary>
+    public int VehicleModelId { get; set; }
 
     /// <summary>
     /// Модель транспортного средства

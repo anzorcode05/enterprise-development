@@ -1,6 +1,4 @@
 
-using System.Linq.Expressions;
-
 namespace TransportCompany.Domain.Repositories;
 
 /// <summary>
@@ -12,35 +10,35 @@ public interface IRepository<TEntity>
     /// <summary>
     /// Возвращает все сущности
     /// </summary>
-    Task<IReadOnlyList<TEntity>> GetAllAsync();
-
-    /// <summary>
-    /// Возвращает сущности, соответствующие условию
-    /// </summary>
-    Task<IReadOnlyList<TEntity>> FindAsync(Expression<Func<TEntity, bool>> predicate);
+    Task<IReadOnlyList<TEntity>> GetAllAsync(
+        CancellationToken cancellationToken = default);
 
     /// <summary>
     /// Возвращает сущность по идентификатору
     /// </summary>
-    Task<TEntity?> GetByIdAsync(int id);
-
-    /// <summary>
-    /// Возвращает следующий доступный идентификатор
-    /// </summary>
-    Task<int> GetNextIdAsync();
+    Task<TEntity?> GetByIdAsync(
+        int id,
+        CancellationToken cancellationToken = default);
 
     /// <summary>
     /// Добавляет новую сущность
     /// </summary>
-    Task AddAsync(TEntity entity);
+    Task AddAsync(
+        TEntity entity,
+        CancellationToken cancellationToken = default);
 
     /// <summary>
     /// Обновляет сущность по идентификатору
     /// </summary>
-    Task<bool> UpdateAsync(int id, TEntity entity);
+    Task<bool> UpdateAsync(
+        int id,
+        TEntity entity,
+        CancellationToken cancellationToken = default);
 
     /// <summary>
     /// Удаляет сущность по идентификатору
     /// </summary>
-    Task<bool> DeleteAsync(int id);
+    Task<bool> DeleteAsync(
+        int id,
+        CancellationToken cancellationToken = default);
 }

@@ -9,7 +9,12 @@ public sealed class Trip
     /// <summary>
     /// Идентификатор рейса
     /// </summary>
-    public required int Id { get; set; }
+    public int Id { get; set; }
+
+    /// <summary>
+    /// Идентификатор водителя
+    /// </summary>
+    public int DriverId { get; set; }
 
     /// <summary>
     /// Водитель, назначенный на рейс
@@ -17,9 +22,19 @@ public sealed class Trip
     public required Driver Driver { get; set; }
 
     /// <summary>
+    /// Идентификатор транспортного средства
+    /// </summary>
+    public int VehicleId { get; set; }
+
+    /// <summary>
     /// Транспортное средство, назначенное на рейс
     /// </summary>
     public required Vehicle Vehicle { get; set; }
+
+    /// <summary>
+    /// Идентификатор клиента
+    /// </summary>
+    public int ClientId { get; set; }
 
     /// <summary>
     /// Клиент, заказавший перевозку

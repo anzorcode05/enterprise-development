@@ -1,6 +1,7 @@
 <Solution>
   <Project Path="TransportCompany.Domain.Shared/TransportCompany.Domain.Shared.csproj" />
   <Project Path="TransportCompany.Domain/TransportCompany.Domain.csproj" />
+  <Project Path="TransportCompany.AppHost/TransportCompany.AppHost.csproj" />
   <Project Path="TransportCompany.Application.Contracts/TransportCompany.Application.Contracts.csproj" />
   <Project Path="TransportCompany.Application/TransportCompany.Application.csproj" />
   <Project Path="TransportCompany.Infrastructure.InMemory/TransportCompany.Infrastructure.InMemory.csproj" />

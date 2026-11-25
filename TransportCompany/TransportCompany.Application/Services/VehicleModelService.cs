@@ -8,9 +8,7 @@ namespace TransportCompany.Application.Services;
 /// <summary>
 /// Сервис для работы с моделями транспорта
 /// </summary>
-public sealed class VehicleModelService(
-    IRepository<VehicleModel> models,
-    IRepository<Vehicle> vehicles)
+public sealed class VehicleModelService(IVehicleModelRepository models)
     : CrudService<VehicleModel, VehicleModelDto, VehicleModelUpsertDto>(models),
       IVehicleModelService
 {
@@ -21,11 +19,12 @@ public sealed class VehicleModelService(
     /// <inheritdoc/>
     protected override Task<VehicleModel> CreateEntityAsync(
         VehicleModelUpsertDto request,
-        int id)
+        CancellationToken cancellationToken)
     {
+        cancellationToken.ThrowIfCancellationRequested();
+
         return Task.FromResult(new VehicleModel
         {
-            Id = id,
             BodyType = request.BodyType,
             BodyVolume = request.BodyVolume
         });
@@ -34,8 +33,11 @@ public sealed class VehicleModelService(
     /// <inheritdoc/>
     protected override Task UpdateEntityAsync(
         VehicleModel model,
-        VehicleModelUpsertDto request)
+        VehicleModelUpsertDto request,
+        CancellationToken cancellationToken)
     {
+        cancellationToken.ThrowIfCancellationRequested();
+
         model.BodyType = request.BodyType;
         model.BodyVolume = request.BodyVolume;
 
@@ -49,22 +51,17 @@ public sealed class VehicleModelService(
         int id,
         CancellationToken cancellationToken = default)
     {
-        cancellationToken.ThrowIfCancellationRequested();
-
-        if (await Repository.GetByIdAsync(id) is null)
+        if (await Repository.GetByIdAsync(id, cancellationToken) is null)
         {
             return false;
         }
 
-        var relatedVehicles = await vehicles.FindAsync(
-            vehicle => vehicle.VehicleModel.Id == id);
-
-        if (relatedVehicles.Count > 0)
+        if (await models.HasVehiclesAsync(id, cancellationToken))
         {
             throw new InvalidOperationException(
                 "Нельзя удалить модель, которая используется транспортом");
         }
 
-        return await Repository.DeleteAsync(id);
+        return await Repository.DeleteAsync(id, cancellationToken);
     }
 }

@@ -27,14 +27,15 @@ public abstract class CrudService<TEntity, TRead, TUpsert>(
     /// </summary>
     protected abstract Task<TEntity> CreateEntityAsync(
         TUpsert request,
-        int id);
+        CancellationToken cancellationToken);
 
     /// <summary>
     /// Обновляет данные существующей сущности
     /// </summary>
     protected abstract Task UpdateEntityAsync(
         TEntity entity,
-        TUpsert request);
+        TUpsert request,
+        CancellationToken cancellationToken);
 
     /// <summary>
     /// Возвращает все сущности
@@ -42,9 +43,7 @@ public abstract class CrudService<TEntity, TRead, TUpsert>(
     public async Task<IReadOnlyList<TRead>> GetAllAsync(
         CancellationToken cancellationToken = default)
     {
-        cancellationToken.ThrowIfCancellationRequested();
-
-        var entities = await Repository.GetAllAsync();
+        var entities = await Repository.GetAllAsync(cancellationToken);
 
         return entities.Select(ToDto).ToList();
     }
@@ -56,9 +55,7 @@ public abstract class CrudService<TEntity, TRead, TUpsert>(
         int id,
         CancellationToken cancellationToken = default)
     {
-        cancellationToken.ThrowIfCancellationRequested();
-
-        var entity = await Repository.GetByIdAsync(id);
+        var entity = await Repository.GetByIdAsync(id, cancellationToken);
 
         return entity is null ? default : ToDto(entity);
     }
@@ -70,12 +67,9 @@ public abstract class CrudService<TEntity, TRead, TUpsert>(
         TUpsert request,
         CancellationToken cancellationToken = default)
     {
-        cancellationToken.ThrowIfCancellationRequested();
+        var entity = await CreateEntityAsync(request, cancellationToken);
 
-        var id = await Repository.GetNextIdAsync();
-        var entity = await CreateEntityAsync(request, id);
-
-        await Repository.AddAsync(entity);
+        await Repository.AddAsync(entity, cancellationToken);
 
         return ToDto(entity);
     }
@@ -88,18 +82,19 @@ public abstract class CrudService<TEntity, TRead, TUpsert>(
         TUpsert request,
         CancellationToken cancellationToken = default)
     {
-        cancellationToken.ThrowIfCancellationRequested();
-
-        var entity = await Repository.GetByIdAsync(id);
+        var entity = await Repository.GetByIdAsync(id, cancellationToken);
 
         if (entity is null)
         {
             return default;
         }
 
-        await UpdateEntityAsync(entity, request);
+        await UpdateEntityAsync(entity, request, cancellationToken);
 
-        var updated = await Repository.UpdateAsync(id, entity);
+        var updated = await Repository.UpdateAsync(
+            id,
+            entity,
+            cancellationToken);
 
         return updated ? ToDto(entity) : default;
     }
@@ -107,12 +102,10 @@ public abstract class CrudService<TEntity, TRead, TUpsert>(
     /// <summary>
     /// Удаляет сущность по идентификатору
     /// </summary>
-    public virtual async Task<bool> DeleteAsync(
+    public virtual Task<bool> DeleteAsync(
         int id,
         CancellationToken cancellationToken = default)
     {
-        cancellationToken.ThrowIfCancellationRequested();
-
-        return await Repository.DeleteAsync(id);
+        return Repository.DeleteAsync(id, cancellationToken);
     }
 }

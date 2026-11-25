@@ -11,7 +11,7 @@ public sealed class VehicleModel
     /// <summary>
     /// Идентификатор модели
     /// </summary>
-    public required int Id { get; set; }
+    public int Id { get; set; }
 
     /// <summary>
     /// Тип кузова
