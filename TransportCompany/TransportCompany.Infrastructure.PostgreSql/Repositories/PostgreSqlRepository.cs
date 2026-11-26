@@ -11,8 +11,14 @@ public abstract class PostgreSqlRepository<TEntity>(
     TransportCompanyDbContext context) : IRepository<TEntity>
     where TEntity : class
 {
+    /// <summary>
+    /// Контекст базы данных
+    /// </summary>
     protected TransportCompanyDbContext Context { get; } = context;
 
+    /// <summary>
+    /// Набор сущностей текущего типа
+    /// </summary>
     protected DbSet<TEntity> Entities => Context.Set<TEntity>();
 
     /// <inheritdoc/>
