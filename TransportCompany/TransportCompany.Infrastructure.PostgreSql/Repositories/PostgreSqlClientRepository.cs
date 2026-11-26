@@ -31,20 +31,29 @@ public sealed class PostgreSqlClientRepository(
         int count,
         CancellationToken cancellationToken = default)
     {
-        return await Context.Trips
+        var summaries = await Context.Trips
             .GroupBy(trip => new
             {
                 trip.ClientId,
                 trip.Client.Name
             })
-            .Select(group => new ClientCostSummary(
+            .Select(group => new
+            {
                 group.Key.ClientId,
-                group.Key.Name,
-                group.Sum(trip => trip.Cost)))
+                ClientName = group.Key.Name,
+                TotalCost = group.Sum(trip => trip.Cost)
+            })
             .OrderByDescending(summary => summary.TotalCost)
             .ThenBy(summary => summary.ClientName)
             .Take(count)
             .ToListAsync(cancellationToken);
+
+        return summaries
+            .Select(summary => new ClientCostSummary(
+                summary.ClientId,
+                summary.ClientName,
+                summary.TotalCost))
+            .ToList();
     }
 
     /// <inheritdoc/>

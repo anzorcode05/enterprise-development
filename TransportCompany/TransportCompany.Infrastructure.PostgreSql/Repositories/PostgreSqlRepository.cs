@@ -58,7 +58,18 @@ public abstract class PostgreSqlRepository<TEntity>(
             return false;
         }
 
-        Context.Entry(existingEntity).CurrentValues.SetValues(entity);
+        var existingEntry = Context.Entry(existingEntity);
+        var incomingValues = Context.Entry(entity).CurrentValues;
+
+        foreach (var property in existingEntry.Properties)
+        {
+            if (property.Metadata.IsPrimaryKey())
+            {
+                continue;
+            }
+
+            property.CurrentValue = incomingValues[property.Metadata];
+        }
 
         await Context.SaveChangesAsync(cancellationToken);
 

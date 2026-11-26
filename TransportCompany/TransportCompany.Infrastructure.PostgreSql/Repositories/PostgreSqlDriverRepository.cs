@@ -18,20 +18,29 @@ public sealed class PostgreSqlDriverRepository(
         int count,
         CancellationToken cancellationToken = default)
     {
-        return await Context.Trips
+        var summaries = await Context.Trips
             .GroupBy(trip => new
             {
                 trip.DriverId,
                 trip.Driver.FullName
             })
-            .Select(group => new DriverTripCountSummary(
+            .Select(group => new
+            {
                 group.Key.DriverId,
-                group.Key.FullName,
-                group.Count()))
+                DriverName = group.Key.FullName,
+                TripCount = group.Count()
+            })
             .OrderByDescending(summary => summary.TripCount)
             .ThenBy(summary => summary.DriverId)
             .Take(count)
             .ToListAsync(cancellationToken);
+
+        return summaries
+            .Select(summary => new DriverTripCountSummary(
+                summary.DriverId,
+                summary.DriverName,
+                summary.TripCount))
+            .ToList();
     }
 
     /// <inheritdoc/>
