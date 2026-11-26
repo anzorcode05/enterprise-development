@@ -35,35 +35,8 @@ public sealed class PostgreSqlDatabaseFixture : IAsyncLifetime
         await _container.StartAsync();
 
         await using var context = CreateDbContext();
-        await context.Database.MigrateAsync();
 
-        await context.Database.ExecuteSqlRawAsync(
-            """
-            SELECT setval(
-                pg_get_serial_sequence('clients', 'id'),
-                COALESCE((SELECT MAX(id) FROM clients), 1),
-                EXISTS(SELECT 1 FROM clients));
-
-            SELECT setval(
-                pg_get_serial_sequence('drivers', 'id'),
-                COALESCE((SELECT MAX(id) FROM drivers), 1),
-                EXISTS(SELECT 1 FROM drivers));
-
-            SELECT setval(
-                pg_get_serial_sequence('vehicle_models', 'id'),
-                COALESCE((SELECT MAX(id) FROM vehicle_models), 1),
-                EXISTS(SELECT 1 FROM vehicle_models));
-
-            SELECT setval(
-                pg_get_serial_sequence('vehicles', 'id'),
-                COALESCE((SELECT MAX(id) FROM vehicles), 1),
-                EXISTS(SELECT 1 FROM vehicles));
-
-            SELECT setval(
-                pg_get_serial_sequence('trips', 'id'),
-                COALESCE((SELECT MAX(id) FROM trips), 1),
-                EXISTS(SELECT 1 FROM trips));
-            """,
+        await context.InitializeDatabaseAsync(
             TestContext.Current.CancellationToken);
     }
 
